@@ -1,18 +1,22 @@
 import flet as ft
+
+from scripts.login import LoginPage
 from scripts.settings import *
 
 
 class App:
     def __init__(self):
-        self.content = ft.Container(
-            ft.Text('Hello', color='#000000')
-        )
+        self.content = None
+
+        self.login = LoginPage(self)
 
     def run(self, page: ft.Page):
 
         page.title = TITLE
         page.bgcolor = ft.colors.WHITE
         page.vertical_alignment = ft.MainAxisAlignment.CENTER
+
+        self.content = self.login.content
 
         page.add(self.content)
 
