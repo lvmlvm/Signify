@@ -1,0 +1,385 @@
+
+<RecentLearn@MDScreen>:
+    name: 'recent_learn'
+    BoxLayout:
+        orientation: 'horizontal'
+        padding: 20
+        spacing: 20
+
+        md_bg_color: '2ac7db'
+
+        MDFloatLayout:
+            size_hint: 0.8, 1
+            pos_hint: {'x': 0}
+            md_bg_color: 'white'
+
+            Image:
+                source: 'assets/images/bg.jpg'
+                size_hint_y: .4
+                pos_hint: {'center_x': .5, 'center_y': .3}
+
+            MDLabel:
+                text: 'Hi Đạt!'
+                font_name: 'Bold'
+                font_size: '50sp'
+                color: '2ac7db'
+                pos_hint: {'x': .1, 'center_y': .8}
+            MDLabel:
+                text: 'Hôm nay bạn muốn học gì nào?'
+                font_size: '20sp'
+                font_name: 'Bold'
+                pos_hint: {'x': .1, 'center_y': .7}
+
+
+        BoxLayout:
+            orientation: 'vertical'
+            MDCard:
+                elevation: 2
+                border_radius: 20
+                padding: 20, 20
+                radius: [15]
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    spacing: 20
+
+                    MDFloatLayout:
+                        size_hint_y: .2
+                        pos_hint: {'center_x': 0.5, 'center_y': .5}
+                        MDLabel:
+                            text: 'Mới học gần đây'
+                            font_name: 'Bold'
+                            font_size: '20sp'
+                            color: 'e8760c'
+                            pos_hint: {'center_x': .5, 'center_y': .5}
+                            halign: 'center'
+
+                    TopicCard:
+                        topic: "Bảng chữ cái"
+                        on_release: root.parent.parent.show_lesson(self.topic)
+
+                        FitImage:
+                            size_hint: None, None
+                            size: (100, 100)
+                            source: app.subjects[self.parent.topic]['imageURL']
+                            pos_hint: {'center_y': .5}
+
+                        MDBoxLayout:
+                            size_hint_y: .8
+                            orientation: 'vertical'
+                            pos_hint: {'center_x': .5, 'center_y': .5}
+                            MDLabel:
+                                text: self.parent.parent.topic
+                                font_name: 'Bold'
+                                font_size: '18sp'
+                                color: 'black'
+                            MDLabel:
+                                font_name: 'Medium'
+                                text: '78%'
+                                font_size: '15sp'
+                                color: '3ea34a'
+
+                            MDFloatLayout:
+                                MDProgressBar:
+                                    value: 78
+                                    color: '3ea34a'
+                                    size_hint_y: .02
+                                    pos_hint: {'center_x': .5, 'center_y': .5}
+
+
+
+                    TopicCard:
+                        topic: "Ngày lễ"
+                        on_release: root.parent.parent.show_lesson(self.topic)
+
+                        FitImage:
+                            size_hint: None, None
+                            size: (100, 100)
+                            source: app.subjects[self.parent.topic]['imageURL']
+                            pos_hint: {'center_y': .5}
+
+                        MDBoxLayout:
+                            size_hint_y: .8
+                            orientation: 'vertical'
+                            pos_hint: {'center_x': .5, 'center_y': .5}
+                            MDLabel:
+                                text: self.parent.parent.topic
+                                font_name: 'Bold'
+                                font_size: '18sp'
+                                color: 'black'
+                            MDLabel:
+                                font_name: 'Medium'
+                                text: '50%'
+                                font_size: '15sp'
+                                color: '3ea34a'
+
+                            MDFloatLayout:
+                                MDProgressBar:
+                                    value: 50
+                                    color: '3ea34a'
+                                    size_hint_y: .02
+                                    pos_hint: {'center_x': .5, 'center_y': .5}
+
+                    TopicCard:
+                        topic: 'Chữ số'
+                        on_release: root.parent.parent.show_lesson(self.topic)
+
+                        FitImage:
+                            size_hint: None, None
+                            size: (100, 100)
+                            source: app.subjects[self.parent.topic]['imageURL']
+                            pos_hint: {'center_y': .5}
+
+                        MDBoxLayout:
+                            size_hint_y: .8
+                            orientation: 'vertical'
+                            pos_hint: {'center_x': .5, 'center_y': .5}
+                            MDLabel:
+                                text: self.parent.parent.topic
+                                font_name: 'Bold'
+                                font_size: '18sp'
+                                color: 'black'
+                            MDLabel:
+                                font_name: 'Medium'
+                                text: '30%'
+                                font_size: '15sp'
+                                color: '3ea34a'
+
+                            MDFloatLayout:
+                                MDProgressBar:
+                                    value: 30
+                                    color: '3ea34a'
+                                    size_hint_y: .02
+                                    pos_hint: {'center_x': .5, 'center_y': .5}
+
+            MDFloatLayout:
+                size_hint_y: .22
+
+#                MDRaisedButton:
+                MDFillRoundFlatButton:
+                    md_bg_color: '0891d1'
+                    text_color: 'white'
+                    font_name: 'Bold'
+                    text: 'Xem các bài học khác tại đây'
+                    halign: 'center'
+                    pos_hint: {'center_x': .5, 'center_y': .5}
+                    on_press:
+                        root.parent.current = 'topic_learn'
+                        root.parent.transition.direction = 'left'
+
+
+<Alphabet@MDCard>:
+    orientation: 'vertical'
+    size_hint: None, None
+    size: 150, 200
+    pos_hint: {'center_y': .5}
+    elevation: 2
+    radius: [10]
+    AsyncImage:
+        size_hint: None, None
+        size: 150, 150
+        source: app.subjects['Bảng chữ cái']['imageURL']
+
+    MDLabel:
+        text: 'Bảng chữ cái'
+        font_name: 'Medium'
+        font_size: '15sp'
+        color: 'black'
+        pos_hint: {'center_x': .5, 'center_y': .5}
+        halign: 'center'
+
+<Numeral@MDCard>
+    orientation: 'vertical'
+    size_hint: None, None
+    size: 150, 200
+    pos_hint: {'center_y': .5}
+    elevation: 2
+    radius: [10]
+    AsyncImage:
+        size_hint: None, None
+        size: 150, 150
+        source: app.subjects['Chữ số']['imageURL']
+
+    MDLabel:
+        text: 'Chữ số'
+        font_name: 'Medium'
+        font_size: '15sp'
+        color: 'black'
+        pos_hint: {'center_x': .5, 'center_y': .5}
+        halign: 'center'
+
+
+<Holiday@MDCard>
+    orientation: 'vertical'
+    size_hint: None, None
+    size: 150, 200
+    pos_hint: {'center_y': .5}
+    elevation: 2
+    radius: [10]
+    AsyncImage:
+        size_hint: None, None
+        size: 150, 150
+        source: app.subjects['Ngày lễ']['imageURL']
+
+    MDLabel:
+        text: 'Ngày lễ'
+        font_name: 'Medium'
+        font_size: '15sp'
+        color: 'black'
+        pos_hint: {'center_x': .5, 'center_y': .5}
+        halign: 'center'
+
+<TopicLearn@MDScreen>
+    name: 'topic_learn'
+    MDFloatLayout:
+        size_hint: 1, .1
+        pos_hint: {'center_x': .5, 'center_y': .95}
+        md_bg_color: '0ac8cf'
+        TooltipMDIconButton:
+            icon: "arrow-left-circle"
+            tooltip_text: 'Quay lại'
+            md_bg_color: 'white'
+            pos_hint: {'center_y': .5}
+            on_press:
+                root.parent.current = 'recent_learn'
+                root.parent.transition.direction = 'right'
+
+
+        MDLabel:
+            text: 'Các bài học theo mức độ'
+            font_name: 'Bold'
+            font_size: '28sp'
+            halign: 'center'
+            color: 'white'
+            pos_hint: {'center_x': .5, 'top': 1}
+
+
+    MDFloatLayout:
+        size_hint: 1, .9
+        pos_hint: {'center_x': .5, 'center_y': .4}
+
+
+        MDBoxLayout:
+#            padding:0, 310
+            orientation: 'vertical'
+            spacing:
+
+            MDLabel:
+                text: 'Cơ bản'
+                font_name: 'Bold'
+                font_size: '20sp'
+                color: 'e8760c'
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                halign: 'center'
+
+            MDScrollView:
+                size_hint: .9, None
+                height: 170
+                padding: 10
+                pos_hint: {'center_x': .5}
+                do_scroll_x: True
+                do_scroll_y: False
+                radius: [10]
+
+                MDBoxLayout:
+                    size_hint: None, None
+                    orientation: 'horizontal'
+                    width: self.minimum_width
+                    pos_hint: {'center_y': .5}
+                    spacing: 30
+
+                    Alphabet
+                    Numeral
+                    Alphabet
+                    Alphabet
+                    Holiday
+                    Alphabet
+                    Alphabet
+                    Alphabet
+                    Alphabet
+                    Alphabet
+
+            MDLabel:
+                text: 'Trung bình'
+                font_name: 'Bold'
+                font_size: '20sp'
+                color: 'e8760c'
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                halign: 'center'
+
+            MDScrollView:
+                size_hint: .9, None
+                height: 170
+                padding: 10
+                pos_hint: {'center_x': .5}
+                do_scroll_x: True
+                do_scroll_y: False
+                radius: [10]
+
+                MDBoxLayout:
+                    size_hint: None, None
+                    orientation: 'horizontal'
+                    width: self.minimum_width
+                    pos_hint: {'center_y': .5}
+                    spacing: 30
+
+                    Numeral
+                    Alphabet
+                    Numeral
+                    Holiday
+                    Holiday
+                    Numeral
+                    Numeral
+                    Numeral
+
+
+            MDLabel:
+                text: 'Nâng cao'
+                font_name: 'Bold'
+                font_size: '20sp'
+                color: 'e8760c'
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                halign: 'center'
+
+            MDScrollView:
+                size_hint: .9, None
+                height: 170
+                padding: 10
+                pos_hint: {'center_x': .5}
+                do_scroll_x: True
+                do_scroll_y: False
+                radius: [10]
+
+                MDBoxLayout:
+                    size_hint: None, None
+                    orientation: 'horizontal'
+                    width: self.minimum_width
+                    pos_hint: {'center_y': .5}
+                    spacing: 30
+
+                    Holiday
+                    Holiday
+                    Alphabet
+                    Holiday
+                    Alphabet
+                    Holiday
+                    Holiday
+                    Holiday
+                    Holiday
+                    Holiday
+
+
+
+<LearnPage>:
+    name: "learn_page"
+    MDScreenManager:
+        id: learn_screen
+        RecentLearn
+        Lesson
+        TopicLearn
+        FlashCard
+        MultipleChoice
+
+
+
+

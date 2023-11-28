@@ -1,0 +1,87 @@
+<TooltipMDIconButton@MDIconButton+MDTooltip>
+<IconListItem>
+    IconLeftWidget:
+        icon: root.icon
+<Word>:
+    font_name: 'Bold'
+    text:'Mặc định'
+    font_size:'25sp'
+    halign:'center'
+    pos_hint:{'center_x': .5, 'center_y': .5}
+
+<Description>:
+    font_name: 'Light'
+    text:'Mặc định'
+    font_size:'12sp'
+    halign:'center'
+    pos_hint:{'center_x': .5, 'center_y': .5}
+
+
+<Lesson>:
+    name: 'lesson'
+    MDFloatLayout:
+        size_hint: 1, .1
+        pos_hint: {'center_x': .5, 'center_y': .95}
+        md_bg_color: '0ac8cf'
+        TooltipMDIconButton:
+            md_bg_color: 'white'
+            icon: "arrow-left-circle"
+            tooltip_text: 'Quay lại'
+            pos_hint: {'center_y': .5}
+            on_press:
+                root.parent.current = 'recent_learn'
+                root.parent.transition.direction = 'right'
+
+
+        MDLabel:
+            id: topic_name
+            text: 'Mặc định'
+            font_name: 'Bold'
+            font_size: '30sp'
+            color: 'white'
+            halign: 'center'
+            pos_hint: {'center_x': .5, 'top': 1}
+
+    MDFloatLayout:
+        size_hint: 1, .14
+        pos_hint: {'center_x': .5, 'center_y': .85}
+        MDLabel:
+            id: topic_description
+            text: 'Mặc định'
+            font_name: 'Light'
+            color: 'black'
+            halign: 'center'
+            font_size: '20sp'
+            pos_hint: {'center_x': .5, 'center_y': .5}
+
+
+    MDFloatLayout:
+        size_hint: 1, .68
+        pos_hint: {'center_x': .5, 'center_y': .45}
+        MDScrollView:
+            size_hint: 1, 1
+            pos_hint: {'center_x': .5, 'center_y': .5}
+            MDGridLayout:
+                id: content_view
+                padding: 10, 10
+                size_hint_y: None
+                height: self.minimum_height
+                row_default_height: 250
+                cols: 2
+                spacing: '40dp'
+
+
+    MDFillRoundFlatButton:
+        text: 'Học'
+        font_name: 'Bold'
+        pos_hint: {'center_x': .3, 'center_y': .05}
+        size_hint_x: .3
+        on_press: root.parent.parent.show_flash_card()
+
+    MDFillRoundFlatButton:
+        md_bg_color: 'FBB237'
+        text: 'Luyện tập'
+        font_name: 'Bold'
+        pos_hint: {'center_x': .7, 'center_y': .05}
+        size_hint_x: .3
+        on_press: root.parent.parent.show_multiple_choice()

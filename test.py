@@ -1,17 +1,40 @@
-import flet as ft
+from kivy.lang import Builder
+from kivymd.app import MDApp
+from kivymd.uix.screen import MDScreen
 
+KV = '''
+ScreenManager:
+    FirstScreen:
+    SecondScreen:
 
-def main(page: ft.Page):
-    def add_clicked(e):
-        page.add(ft.Checkbox(label=new_task.value))
-        new_task.value = ""
-        page.update()
+<FirstScreen>:
+    name: 'first'
+    BoxLayout:
+        orientation: 'vertical'
+        MDRaisedButton:
+            text: 'Go to Second Screen'
+            on_release: app.root.current = 'second'
 
-    new_task = ft.TextField(hint_text="Whats needs to be done?")
-    page.add(new_task, ft.FloatingActionButton(icon=ft.icons.ADD, on_click=add_clicked))
+<SecondScreen>:
+    name: 'second'
+    BoxLayout:
+        orientation: 'vertical'
+        MDRaisedButton:
+            text: 'Go to First Screen'
+            on_release: app.root.current = 'first'
+'''
 
+class FirstScreen(MDScreen):
+    def on_leave(self):
+        print(f'Leaving {self.name} screen, parent: {self.parent}')
+
+class SecondScreen(MDScreen):
+    def on_leave(self):
+        print(f'Leaving {self.name} screen, parent: {self.parent}')
+
+class TestApp(MDApp):
+    def build(self):
+        return Builder.load_string(KV)
 
 if __name__ == '__main__':
-    ft.app(target=main)
-    # ft.app(target=main, view=ft.WEB_BROWSER, assets_dir="assets")
-
+    TestApp().run()

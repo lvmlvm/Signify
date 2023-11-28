@@ -1,0 +1,279 @@
+<Login@MDScreen>:
+    name: 'login'
+
+    MDGridLayout:
+        cols: 2
+
+        MDFloatLayout:
+            md_bg_color: '18aac4'
+
+            MDLabel:
+                text: 'Học ASL miễn phí'
+                color: 1, 1, 1, 1
+                font_name: 'Bold'
+                font_size: '40sp'
+                halign: 'center'
+                pos_hint: {'center_y': 0.7}
+
+            MDFloatLayout:
+                size_hint: .7, 1
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                MDLabel:
+                    font_name: 'Medium'
+                    text: 'Tương tác giữa người khiếm khuyết chưa bao giờ dễ dàng hơn thông qua phiên dịch ASL và hệ thông học tập'
+                    color: 1, 1, 1, 1
+                    font_size: '20sp'
+                    halign: 'center'
+                    pos_hint: {'center_x': .5, 'center_y': 0.4}
+
+        MDFloatLayout:
+            md_bg_color: 1, 1, 1, 1
+
+            Image:
+                source: 'assets/images/logo.png'
+                size_hint: .5, .2
+                pos_hint: {'center_x': .5, 'center_y': .8}
+
+            MDFloatLayout:
+                size_hint: .8, None
+                height: 250
+                pos_hint: {'center_x': .5, 'center_y': .6}
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    pos_hint: {'center_x': .5, 'center_y': .5}
+                    spacing: 20
+                    MDBoxLayout:
+                        size_hint: 1, None
+                        height: 50
+
+                        MDLabel:
+                            text: 'Email'
+                            font_name: 'Medium'
+
+                        MDFloatLayout:
+                            size_hint_x: 1.6
+                            pos_hint: {'center_x': .5, 'center_y': .5}
+                            md_bg_color: rgba(241, 241, 243, 255)
+                            radius: [10]
+
+                            TextInput:
+                                hint_text: 'Gmail của bạn'
+                                pos_hint: {'center_x': .5, 'center_y': .5}
+                                height: self.minimum_height
+                                cursor_color: rgba(253, 174, 177, 255)
+                                cursor_width: '2sp'
+                                multiline: 'False'
+                                background_color: 0, 0, 0, 0
+                                foreground_color: rgba(253, 175, 176, 255)
+                                padding: 15
+                                font_size: '15sp'
+                                font_name: 'Medium'
+                                hint_text_color: rgba(206, 206, 209, 255)
+
+
+                    MDBoxLayout:
+                        size_hint: 1, None
+                        height: 50
+
+                        MDLabel:
+                            text: 'Mật khẩu'
+                            font_name: 'Medium'
+
+                        MDFloatLayout:
+                            size_hint_x: 1.6
+                            pos_hint: {'center_x': .5, 'center_y': .5}
+                            md_bg_color: rgba(241, 241, 243, 255)
+                            radius: [10]
+
+                            TextInput:
+                                hint_text: '******'
+                                pos_hint: {'center_x': .5, 'center_y': .5}
+                                height: self.minimum_height
+                                cursor_color: rgba(253, 174, 177, 255)
+                                cursor_width: '2sp'
+                                multiline: 'False'
+                                background_color: 0, 0, 0, 0
+                                foreground_color: rgba(253, 175, 176, 255)
+                                padding: 15
+                                font_size: '15sp'
+                                font_name: 'Medium'
+                                hint_text_color: rgba(206, 206, 209, 255)
+
+            MDFillRoundFlatButton:
+                font_name: 'Bold'
+                text: 'Đăng nhập'
+                pos_hint: {'center_x': .5, 'center_y': .3}
+                size_hint: .6, .05
+                on_press: app.main_screen.current = 'home'
+
+
+            MDLabel:
+                font_name: 'Medium'
+                text: 'Chưa có tài khoản?'
+                color: 0, 0, 0, 1
+                halign: 'center'
+                pos_hint: {'center_x': .35, 'center_y': .1}
+
+
+            MDTextButton:
+                font_name: 'Bold'
+                text: 'Đăng kí'
+                halign: 'center'
+                color:  0/255, 116/255, 206/255, 1
+                pos_hint: {'center_x': .75, 'center_y': .1}
+                on_press: app.main_screen.current = 'signup'
+
+
+<SignUp@MDScreen>:
+    name: 'signup'
+    MDGridLayout:
+        cols: 2
+
+        MDFloatLayout:
+            md_bg_color: '18aac4'
+
+            MDLabel:
+                text: 'Học ASL miễn phí'
+                color: 1, 1, 1, 1
+                font_name: 'Bold'
+                font_size: '40sp'
+                halign: 'center'
+                pos_hint: {'center_y': 0.7}
+
+            MDFloatLayout:
+                size_hint: .7, 1
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                MDLabel:
+                    font_name: 'Medium'
+                    text: 'Tương tác giữa người khiếm khuyết chưa bao giờ dễ dàng hơn thông qua phiên dịch ASL và hệ thông học tập'
+                    color: 1, 1, 1, 1
+                    font_size: '20sp'
+                    halign: 'center'
+                    pos_hint: {'center_x': .5, 'center_y': 0.4}
+
+        MDFloatLayout:
+            md_bg_color: 1, 1, 1, 1
+
+            Image:
+                source: 'assets/images/logo.png'
+                size_hint: .5, .2
+                pos_hint: {'center_x': .5, 'center_y': .8}
+
+            MDFloatLayout:
+                size_hint: .8, None
+                height: 250
+                pos_hint: {'center_x': .5, 'center_y': .5}
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    pos_hint: {'center_x': .5, 'center_y': .5}
+                    spacing: 20
+                    MDBoxLayout:
+                        size_hint: 1, None
+                        height: 50
+
+                        MDLabel:
+                            text: 'Họ và tên'
+                            font_name: 'Medium'
+
+                        MDFloatLayout:
+                            size_hint_x: 1.6
+                            pos_hint: {'center_x': .5, 'center_y': .5}
+                            md_bg_color: rgba(241, 241, 243, 255)
+                            radius: [10]
+
+                            TextInput:
+                                hint_text: 'Gmail của bạn'
+                                pos_hint: {'center_x': .5, 'center_y': .5}
+                                height: self.minimum_height
+                                cursor_color: rgba(253, 174, 177, 255)
+                                cursor_width: '2sp'
+                                multiline: 'False'
+                                background_color: 0, 0, 0, 0
+                                foreground_color: rgba(253, 175, 176, 255)
+                                padding: 15
+                                font_size: '15sp'
+                                font_name: 'Medium'
+                                hint_text_color: rgba(206, 206, 209, 255)
+
+                    MDBoxLayout:
+                        size_hint: 1, None
+                        height: 50
+                        MDLabel:
+                            text: 'Email'
+                            font_name: 'Medium'
+
+                        MDFloatLayout:
+                            size_hint_x: 1.6
+                            pos_hint: {'center_x': .5, 'center_y': .5}
+                            md_bg_color: rgba(241, 241, 243, 255)
+                            radius: [10]
+
+                            TextInput:
+                                hint_text: 'Tên của bạn'
+                                pos_hint: {'center_x': .5, 'center_y': .5}
+                                height: self.minimum_height
+                                cursor_color: rgba(253, 174, 177, 255)
+                                cursor_width: '2sp'
+                                multiline: 'False'
+                                background_color: 0, 0, 0, 0
+                                foreground_color: rgba(253, 175, 176, 255)
+                                padding: 15
+                                font_size: '15sp'
+                                font_name: 'Medium'
+                                hint_text_color: rgba(206, 206, 209, 255)
+
+
+                    MDBoxLayout:
+                        size_hint: 1, None
+                        height: 50
+
+                        MDLabel:
+                            text: 'Mật khẩu'
+                            font_name: 'Medium'
+
+                        MDFloatLayout:
+                            size_hint_x: 1.6
+                            pos_hint: {'center_x': .5, 'center_y': .5}
+                            md_bg_color: rgba(241, 241, 243, 255)
+                            radius: [10]
+
+                            TextInput:
+                                hint_text: '******'
+                                pos_hint: {'center_x': .5, 'center_y': .5}
+                                height: self.minimum_height
+                                cursor_color: rgba(253, 174, 177, 255)
+                                cursor_width: '2sp'
+                                multiline: 'False'
+                                background_color: 0, 0, 0, 0
+                                foreground_color: rgba(253, 175, 176, 255)
+                                padding: 15
+                                font_size: '15sp'
+                                font_name: 'Medium'
+                                hint_text_color: rgba(206, 206, 209, 255)
+
+            MDFillRoundFlatButton:
+                md_bg_color: 'ed941f'
+                font_name: 'Bold'
+                text: 'Đăng kí'
+                pos_hint: {'center_x': .5, 'center_y': .2}
+                size_hint: .6, .05
+                on_press: app.main_screen.current = 'home'
+
+
+            MDLabel:
+                font_name: 'Medium'
+                text: 'Đã có tài khoản?'
+                color: 0, 0, 0, 1
+                halign: 'center'
+                pos_hint: {'center_x': .35, 'center_y': .1}
+
+
+            MDTextButton:
+                font_name: 'Bold'
+                text: 'Đăng nhập'
+                halign: 'center'
+                color:  0/255, 116/255, 206/255, 1
+                pos_hint: {'center_x': .75, 'center_y': .1}
+                on_press: app.main_screen.current = 'login'

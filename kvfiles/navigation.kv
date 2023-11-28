@@ -1,0 +1,38 @@
+
+<MainNavigation>:
+    MDBoxLayout:
+        id: box_layout
+        MDNavigationRail:
+            selected_color_background: "cccccc"
+            font_name: 'Bold'
+            anchor: "center"
+            type: "selected"
+            text_color_item_active: '0291de'
+            icon_color_item_active: '0291de'
+            elevation: 3
+
+            on_item_release: root.switch_tabs(*args)
+
+            MDNavigationRailItem:
+                name: 'learn'
+                text: 'Học'
+                icon: 'school'
+
+            MDNavigationRailItem:
+                name: 'search'
+                text: 'Tra cứu'
+                icon: 'nfc-search-variant'
+
+
+            MDNavigationRailItem:
+                name: 'profile'
+                text: 'Hồ sơ'
+                icon: 'account-circle'
+
+
+        MDScreenManager:
+            id: nav_tabs
+            LearnPage
+            SearchPage
+            ProfilePage
+
