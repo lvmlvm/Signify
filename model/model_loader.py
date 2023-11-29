@@ -7,7 +7,7 @@ from tensorflow.keras.callbacks import TensorBoard
 model_catalogue = {
     "qtpn": {
         "path": 'model/holiday/qtpn.h5',
-        "no_of_states": 5
+        "no_of_states": 4
     },
     "gptd": {
         "path": 'model/holiday/gptd.h5',

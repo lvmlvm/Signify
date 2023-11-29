@@ -47,15 +47,16 @@ def prob_viz(res, actions, input_frame, colors):
 def convert_to_str(items):
     return [convert_to_str(s) if isinstance(s, list) else str(s) for s in items ]
 
-model = md_loader.load_model(md_loader.model_catalogue["gpmn"])
-actions = convert_to_str(list(range(0, md_loader.model_catalogue["gpmn"]["no_of_states"])))
+action_of_choice = "qtpn"
+model = md_loader.load_model(md_loader.model_catalogue[action_of_choice])
+actions = convert_to_str(list(range(0, md_loader.model_catalogue[action_of_choice]["no_of_states"])))
 
 sequence = []
 sentence = []
 predictions = []
 threshold = 0.8
 
-# cap = cv2.VideoCapture("test2.mp4")
+# cap = cv2.VideoCapture("test.mp4")
 cap = cv2.VideoCapture(0)
 with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
     while cap.isOpened():
@@ -76,7 +77,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
             predictions.append(np.argmax(res))
             
             if res[np.argmax(res)] > threshold: 
-                if np.unique(predictions[-3:])[0]==np.argmax(res): 
+                if np.unique(predictions[-5:])[0]==np.argmax(res): 
                     if len(sentence) > 0: 
                         if actions[np.argmax(res)] != sentence[-1] and np.argmax(res) != 0 and actions[np.argmax(res)] not in sentence:
                             sentence.append(actions[np.argmax(res)])
