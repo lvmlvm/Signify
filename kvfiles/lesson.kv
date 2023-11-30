@@ -42,6 +42,35 @@
             halign: 'center'
             pos_hint: {'center_x': .5, 'top': 1}
 
+
+        MDBoxLayout:
+            id: chip_box
+            size_hint: .3, 1
+            spacing: "4dp"
+            pos_hint: {'right': 1, 'center_y': .5}
+
+            MDCheckbox:
+                on_press:
+
+            MDLabel:
+                font_name: 'Bold'
+                color: 'white'
+                text: 'Miền Bắc'
+
+            MDCheckbox:
+
+            MDLabel:
+                font_name: 'Bold'
+                color: 'white'
+                text: 'Miền Trung'
+
+            MDCheckbox:
+
+            MDLabel:
+                font_name: 'Bold'
+                color: 'white'
+                text: 'Miền Nam'
+
     MDFloatLayout:
         size_hint: 1, .14
         pos_hint: {'center_x': .5, 'center_y': .85}

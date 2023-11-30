@@ -1,57 +1,84 @@
-<SearchPage@MDScreen>
+<ContentCard>
+<SearchPage>:
     name: 'search_page'
-    MDBoxLayout:
-        orientation: 'vertical'
+    MDScreenManager:
+        id: result
+        MDScreen:
+            name: 'main'
+            MDBoxLayout:
+                orientation: 'vertical'
 
-        MDFloatLayout:
-            size_hint_y: .7
-            md_bg_color: '28bfc9'
+                MDFloatLayout:
+                    size_hint_y: .7
+                    md_bg_color: '28bfc9'
 
-            MDLabel:
-                halign: 'center'
-                pos_hint: {'center_x': .5, 'center_y': .7}
-                text: 'Tra cứu dễ dàng với Signify'
-                font_name: 'Bold'
-                color: 'white'
-                font_size: '26sp'
+                    MDLabel:
+                        halign: 'center'
+                        pos_hint: {'center_x': .5, 'center_y': .7}
+                        text: 'Tra cứu dễ dàng với Signify'
+                        font_name: 'Bold'
+                        color: 'white'
+                        font_size: '26sp'
 
-            MDFloatLayout:
-                size_hint: .8, .2
-                pos_hint: {'center_x': .5, 'center_y': .35}
-                md_bg_color: rgba(241, 241, 243, 255)
-                radius: [10]
+                    MDFloatLayout:
+                        size_hint: .8, .2
+                        pos_hint: {'center_x': .5, 'center_y': .35}
+                        md_bg_color: rgba(241, 241, 243, 255)
+                        radius: [10]
 
-                TextInput:
-                    hint_text: 'Từ hoặc cụm từ'
-                    pos_hint: {'center_x': .5, 'center_y': .5}
-                    height: self.minimum_height
-                    cursor_color: rgba(253, 174, 177, 255)
-                    cursor_width: '2sp'
-                    multiline: 'False'
-                    background_color: 0, 0, 0, 0
-                    foreground_color: rgba(253, 175, 176, 255)
-                    padding: 15
-                    font_size: '20sp'
-                    font_name: 'Medium'
-                    hint_text_color: rgba(206, 206, 209, 255)
-                    icon_left: 'key-variant'
+                        TextInput:
+                            id: text_input
+                            hint_text: 'Từ hoặc cụm từ'
+                            pos_hint: {'center_x': .5, 'center_y': .5}
+                            height: self.minimum_height
+                            cursor_color: rgba(253, 174, 177, 255)
+                            cursor_width: '2sp'
+                            multiline: False
+                            background_color: 0, 0, 0, 0
+                            foreground_color: rgba(253, 175, 176, 255)
+                            padding: 15
+                            font_size: '20sp'
+                            font_name: 'Medium'
+                            hint_text_color: rgba(206, 206, 209, 255)
+                            icon_left: 'key-variant'
+                            on_text: root.show_suggestion(self.text)
+                            on_text_validate: root.search_act(self.text)
 
+                MDScreenManager:
+                    id: screen_manager
+                    MDScreen:
+                        name: 'nothing'
+                        MDFloatLayout:
+                            MDLabel:
+                                halign: 'center'
+                                text: 'Ops! Chưa tìm thấy kết quả!'
+                                font_name: 'Bold'
+                                color: 'db2302'
+                                font_size: '38sp'
+                                pos_hint: {'center_x': .5, 'center_y': .6}
 
+                            MDLabel:
+                                halign: 'center'
+                                text: 'Hãy gõ từ hoặc cụm từ bạn cần ở ô tìm kiếm phía trên!'
+                                font_name: 'Light'
+                                color: 'black'
+                                font_size: '15sp'
+                                pos_hint: {'center_x': .5, 'center_y': .5}
 
-        MDFloatLayout:
-            MDLabel:
-                halign: 'center'
-                text: 'Ops! Chưa tìm thấy kết quả!'
-                font_name: 'Bold'
-                color: 'db2302'
-                font_size: '38sp'
-                pos_hint: {'center_x': .5, 'center_y': .6}
+                    MDScreen:
+                        name: 'show'
+                        MDScrollView:
+                            padding: 10
+                            do_scroll_x: False
+                            do_scroll_y: True
+                            size_hint: 1, 1
+                            pos_hint: {'center_x': .5, 'center_y': .5}
+                            MDGridLayout:
+                                id: box_card
+                                cols: 2
+                                size_hint_y: None
+                                height: self.minimum_height
+                                spacing: 20
+                                row_default_height: 250
 
-            MDLabel:
-                halign: 'center'
-                text: 'Hãy gõ từ hoặc cụm từ bạn cần ở ô tìm kiếm phía trên!'
-                font_name: 'Light'
-                color: 'black'
-                font_size: '15sp'
-                pos_hint: {'center_x': .5, 'center_y': .5}
-
+        VideoDisplay

@@ -1,3 +1,4 @@
+from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.core.text import LabelBase
 from kivy.graphics import Color, RoundedRectangle
@@ -12,6 +13,7 @@ from kivymd.uix.bottomnavigation import MDBottomNavigation
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDRectangleFlatButton, MDFillRoundFlatIconButton
 from kivymd.uix.card import MDCard
+from kivymd.uix.chip import MDChip
 from kivymd.uix.fitimage import FitImage
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.label import MDLabel
@@ -29,6 +31,7 @@ from kivymd.uix.widget import MDWidget
 from kivy.core.window import Window
 from kivy.uix.videoplayer import VideoPlayer
 
+import dictionary
 import question as qs
 from scripts.settings import *
 
@@ -40,6 +43,7 @@ Builder.load_file('kvfiles/navigation.kv')
 Builder.load_file('kvfiles/search.kv')
 Builder.load_file('kvfiles/lesson.kv')
 Builder.load_file('kvfiles/login.kv')
+Builder.load_file('kvfiles/video.kv')
 Builder.load_file('kvfiles/main.kv')
 
 
@@ -90,6 +94,12 @@ class LearnPage(MDScreen):
         self.words = []
         self.questions = []
         self.current_q = 0
+        self.true_cnt = 0
+
+    def removes_marks_all_chips(self, selected_instance_chip):
+        for instance_chip in self.ids.chip_box.children:
+            if instance_chip != selected_instance_chip:
+                instance_chip.active = False
 
     def show_lesson(self, topic):
         self.subjects = qs.subjects
@@ -161,6 +171,13 @@ class LearnPage(MDScreen):
 
     def change_question(self):
         self.current_q += 1
+        if self.current_q == len(self.questions):
+            score_widget = self.ids.learn_screen.get_screen('score')
+            score_widget.ids.score.text = str(self.true_cnt) + '/10 điểm'
+
+            self.ids.learn_screen.current = 'score'
+            return
+
         self.current_q %= len(self.questions)
 
         widget = self.ids.learn_screen.get_screen('multiple_choice')
@@ -185,6 +202,7 @@ class LearnPage(MDScreen):
         self.answer_card = None
 
         if obj.text == answer:
+            self.true_cnt += 1
             self.answer_card = AnswerCard(True, answer)
         else:
             self.answer_card = AnswerCard(False, answer)
@@ -213,6 +231,48 @@ class ContentCard(MDCard):
         super().__init__(*args, **kwargs)
         content = args[0]
         word = args[1]
+
+        self.orientation = 'vertical'
+        self.padding = '8dp'
+        self.size_hint = (1, None)
+        self.height = 250
+        self.elevation = 2
+        self.border_radius = 20
+        self.radius = [15]
+
+        first_layer = MDBoxLayout(
+            orientation='horizontal',
+            spacing='30dp',
+        )
+
+        first_layer.add_widget(
+            Image(
+                size_hint=(None, None),
+                size=(240, 240),
+                pos_hint={'center_y': .5},
+                source=content[word]['imageURL']
+            )
+        )
+
+        second_layer = MDBoxLayout(orientation='vertical')
+        second_layer.add_widget(
+            Word(text=word)
+        )
+        second_layer.add_widget(
+            Description(text=content[word]['description'])
+        )
+        first_layer.add_widget(second_layer)
+
+        self.add_widget(first_layer)
+
+
+class SearchCard(MDCard):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        content = args[0]
+        word = args[1]
+        self.word = word
+        self.topic = args[2]
 
         self.orientation = 'vertical'
         self.padding = '8dp'
@@ -284,6 +344,91 @@ class FlashCard(MDScreen):
 
 
 class MultipleChoice(MDScreen):
+    pass
+
+
+class Score(MDScreen):
+    pass
+
+
+class SearchPage(MDScreen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.trie = dictionary.Trie()
+        self.num_word = 15
+
+        self.menu = None
+        self.cnt = 0
+
+    def show_suggestion(self, word):
+        if self.menu is not None: self.menu.dismiss()
+
+        words = sorted(self.trie.get_child_words(word))[:self.num_word]
+
+        menu_items = [
+            {
+                'viewclass': 'OneLineListItem',
+                'text': w,
+                'on_release': lambda x=w: self.search_act(x)
+            }
+            for w in words
+        ]
+
+        self.menu = MDDropdownMenu(
+            caller=self.ids.text_input,
+            items=menu_items,
+            width_mult=4,
+        )
+        self.menu.dismiss()
+
+        self.menu.open()
+
+    def search_act(self, word):
+        self.menu.dismiss()
+        words = self.trie.get_child_words(word)
+
+        flag = len(words)
+
+        self.ids.box_card.clear_widgets()
+        for word in words:
+            if word not in self.trie.topic:
+                flag -= 1
+                continue
+
+            topic = self.trie.topic[word]
+            if word in qs.subjects[topic]['content']:
+                self.ids.box_card.add_widget(SearchCard(qs.subjects[topic]['content'], word, topic))
+
+        if flag == 0:
+            self.ids.screen_manager.current = 'nothing'
+            self.ids.screen_manager.transition.direction = 'left'
+        else:
+            self.ids.screen_manager.current = 'show'
+            self.ids.screen_manager.transition.direction = 'left'
+
+    def show_video(self, card):
+        topic = card.topic
+        word = card.word
+
+        widget = self.ids.result.get_screen('video')
+
+        region = 'Toàn quốc' if 'Toàn quốc' in qs.subjects[topic]['content'][word]['videoURL'] else 'Miền Bắc'
+        content = qs.subjects[topic]['content'][word]
+
+        widget.ids.video_source.source = content['videoURL'][region]
+        widget.ids.word.text = word
+        widget.ids.description.text = content['description']
+
+        self.ids.result.current = 'video'
+        self.ids.result.transition.direction = 'left'
+
+    def simulate(self):
+        pass
+
+    def return_search(self):
+        self.ids.result.current = 'main'
+        self.ids.result.transition.direction = 'right'
+class VideoDisplay(MDScreen):
     pass
 
 

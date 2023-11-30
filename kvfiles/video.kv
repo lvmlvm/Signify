@@ -1,0 +1,48 @@
+<SearchCard>:
+    on_release: root.parent.parent.parent.parent.parent.parent.parent.parent.show_video(self)
+<VideoDisplay>:
+    name: 'video'
+    MDFloatLayout:
+        size_hint: 1, 1
+        pos_hint: {'center_x': .5, 'center_y': .55}
+
+        VideoPlayer:
+            id: video_source
+            source: ''
+            options: {'eos': 'stop'}
+            size_hint: .5, .7
+            pos_hint: {'center_x': .5, 'center_y': .62}
+
+        MDLabel:
+            id: word
+            text: 'Chào buổi sáng'
+            font_name: 'Bold'
+            font_size: '26sp'
+            pos_hint: {'center_x': .5, 'center_y': .25}
+            halign: 'center'
+
+        MDLabel:
+            id: description
+            text: 'Chào buổi sáng'
+            font_name: 'Light'
+            font_size: '12sp'
+            size_hint_x: .5
+            pos_hint: {'center_x': .5, 'center_y': .18}
+            halign: 'center'
+
+        MDFillRoundFlatButton:
+            font_name: 'Bold'
+            text: 'Thử mô phỏng lại'
+            size_hint_x: .3
+            pos_hint: {'center_x': .5, 'center_y': .11}
+#            on_press: root.parent.parent.next_flash_card(1)
+
+        MDFillRoundFlatButton:
+            font_name: 'Bold'
+            text: 'Quay lại'
+            md_bg_color: 'f56d05'
+            size_hint_x: .3
+            pos_hint: {'center_x': .5, 'center_y': .04}
+            on_press:
+                root.parent.current = 'main'
+                root.parent.transition.direction = 'right'

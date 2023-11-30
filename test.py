@@ -1,40 +1,39 @@
 from kivy.lang import Builder
+from kivy.metrics import dp
+
 from kivymd.app import MDApp
-from kivymd.uix.screen import MDScreen
+from kivymd.uix.menu import MDDropdownMenu
 
 KV = '''
-ScreenManager:
-    FirstScreen:
-    SecondScreen:
+MDScreen:
 
-<FirstScreen>:
-    name: 'first'
-    BoxLayout:
-        orientation: 'vertical'
-        MDRaisedButton:
-            text: 'Go to Second Screen'
-            on_release: app.root.current = 'second'
-
-<SecondScreen>:
-    name: 'second'
-    BoxLayout:
-        orientation: 'vertical'
-        MDRaisedButton:
-            text: 'Go to First Screen'
-            on_release: app.root.current = 'first'
+    MDRaisedButton:
+        id: button
+        text: "Press me"
+        pos_hint: {"center_x": .5, "center_y": .5}
+        on_release: app.menu_open()
 '''
 
-class FirstScreen(MDScreen):
-    def on_leave(self):
-        print(f'Leaving {self.name} screen, parent: {self.parent}')
 
-class SecondScreen(MDScreen):
-    def on_leave(self):
-        print(f'Leaving {self.name} screen, parent: {self.parent}')
+class Test(MDApp):
+    def menu_open(self):
+        menu_items = [
+            {
+                "text": f"Item {i}",
+                "on_release": lambda x=f"Item {i}": self.menu_callback(x),
+            } for i in range(5)
+        ]
+        MDDropdownMenu(
+            caller=self.root.ids.button, items=menu_items
+        ).open()
 
-class TestApp(MDApp):
+    def menu_callback(self, text_item):
+        print(text_item)
+
     def build(self):
+        self.theme_cls.primary_palette = "Orange"
+        self.theme_cls.theme_style = "Dark"
         return Builder.load_string(KV)
 
-if __name__ == '__main__':
-    TestApp().run()
+
+Test().run()
