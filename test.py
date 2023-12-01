@@ -1,39 +1,49 @@
-from kivy.lang import Builder
-from kivy.metrics import dp
-
 from kivymd.app import MDApp
-from kivymd.uix.menu import MDDropdownMenu
-
-KV = '''
-MDScreen:
-
-    MDRaisedButton:
-        id: button
-        text: "Press me"
-        pos_hint: {"center_x": .5, "center_y": .5}
-        on_release: app.menu_open()
-'''
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.button import MDRaisedButton
+from kivy.uix.image import Image
+from kivy.graphics.texture import Texture
+from kivy.clock import Clock
+import cv2
 
 
-class Test(MDApp):
-    def menu_open(self):
-        menu_items = [
-            {
-                "text": f"Item {i}",
-                "on_release": lambda x=f"Item {i}": self.menu_callback(x),
-            } for i in range(5)
-        ]
-        MDDropdownMenu(
-            caller=self.root.ids.button, items=menu_items
-        ).open()
-
-    def menu_callback(self, text_item):
-        print(text_item)
+class MainApp(MDApp):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.image_frame = None
+        self.capture = None
+        self.image = None
 
     def build(self):
-        self.theme_cls.primary_palette = "Orange"
-        self.theme_cls.theme_style = "Dark"
-        return Builder.load_string(KV)
+        layout = MDBoxLayout(orientation='vertical')
+        self.image = Image()
+
+        layout.add_widget(self.image)
+
+        layout.add_widget(
+            MDRaisedButton(
+                text='Click here',
+                pos_hint={'center_x': .5, 'center_y': .5},
+                size_hint=(None, None)
+            )
+        )
+
+        self.capture = cv2.VideoCapture(0)
+        Clock.schedule_interval(self.load_video, 1.0 / 60.0)
+        return layout
+
+    def load_video(self, *args):
+        ret, frame = self.capture.read()
+
+        self.image_frame = frame
+
+        buffer = cv2.flip(frame, 0).tostring()
+        texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
+        texture.blit_buffer(buffer, colorfmt='bgr', bufferfmt='ubyte')
+
+        self.image.texture = texture
 
 
-Test().run()
+
+if __name__ == '__main__':
+    MainApp().run()

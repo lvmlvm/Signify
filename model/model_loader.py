@@ -19,12 +19,13 @@ model_catalogue = {
     }
 }
 
+
 def load_model(model_name: dict):
     """
     Load TensorFlow model of the desired action
     """
     model = Sequential()
-    model.add(LSTM(64, return_sequences=True, activation='relu', input_shape=(5,258)))
+    model.add(LSTM(64, return_sequences=True, activation='relu', input_shape=(5, 258)))
     model.add(LSTM(128, return_sequences=True, activation='relu'))
     model.add(LSTM(64, return_sequences=False, activation='relu'))
     model.add(Dense(64, activation='relu'))

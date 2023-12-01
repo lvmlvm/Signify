@@ -2,6 +2,7 @@ from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.core.text import LabelBase
 from kivy.graphics import Color, RoundedRectangle
+from kivy.graphics.texture import Texture
 from kivy.lang import Builder
 from kivy.properties import StringProperty
 from kivy.uix.gridlayout import GridLayout
@@ -34,6 +35,12 @@ from kivy.uix.videoplayer import VideoPlayer
 import dictionary
 import question as qs
 from scripts.settings import *
+import cv2
+import tensorflow
+import numpy as np
+import mediapipe as mp
+import model.model_loader as md_loader
+import camera
 
 # Window.fullscreen = 'auto'
 Builder.load_file('kvfiles/profile.kv')
@@ -45,6 +52,11 @@ Builder.load_file('kvfiles/lesson.kv')
 Builder.load_file('kvfiles/login.kv')
 Builder.load_file('kvfiles/video.kv')
 Builder.load_file('kvfiles/main.kv')
+
+# Model
+mp_holistic = mp.solutions.holistic
+mp_drawing = mp.solutions.drawing_utils
+colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (255, 0, 255), (0, 255, 255), (0, 0, 0)]
 
 
 class IconListItem(OneLineIconListItem):
@@ -360,6 +372,27 @@ class SearchPage(MDScreen):
         self.menu = None
         self.cnt = 0
 
+        # Model
+        self.show_capture = False
+        Clock.schedule_interval(self.load_image, 1.0 / 120)
+
+        self.image = None
+        self.capture = None
+
+        self.action_of_choice = "qtpn"
+        self.model = md_loader.load_model(md_loader.model_catalogue[self.action_of_choice])
+        self.actions = camera.convert_to_str(
+            list(range(0, md_loader.model_catalogue[self.action_of_choice]["no_of_states"])))
+
+        self.sequence = []
+        self.sentence = []
+        self.predictions = []
+        self.threshold = 0.8
+
+        self.cap = cv2.VideoCapture(0)
+
+        self.holistic = mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5)
+
     def show_suggestion(self, word):
         if self.menu is not None: self.menu.dismiss()
 
@@ -425,12 +458,60 @@ class SearchPage(MDScreen):
     def simulate(self):
         pass
 
-    def return_search(self):
-        self.ids.result.current = 'main'
-        self.ids.result.transition.direction = 'right'
+    def load_image(self, *args):
+
+        if not self.show_capture:
+            return
+
+        ret, frame = self.cap.read()
+
+        self.image, results = camera.mediapipe_detection(frame, self.holistic)
+        print(results)
+
+        camera.draw_styled_landmarks(self.image, results)
+
+        keypoints = camera.extract_keypoints(results)
+        self.sequence.append(keypoints)
+        sequence = self.sequence[-5:]
+
+        if len(sequence) == 5:
+            res = self.model.predict(np.expand_dims(sequence, axis=0))[0]
+            print(self.actions[np.argmax(res)])
+            self.predictions.append(np.argmax(res))
+
+            if res[np.argmax(res)] > self.threshold:
+                if np.unique(self.predictions[-5:])[0] == np.argmax(res):
+                    if len(self.sentence) > 0:
+                        if (self.actions[np.argmax(res)] != self.sentence[-1] and np.argmax(res) != 0 and
+                                self.actions[np.argmax(res)] not in self.sentence):
+                            self.sentence.append(self.actions[np.argmax(res)])
+                    else:
+                        if np.argmax(res) != 0:
+                            self.sentence.append(self.actions[np.argmax(res)])
+
+            if len(self.sentence) > 5:
+                self.sentence = self.sentence[-5:]
+
+            self.image = camera.prob_viz(res, self.actions, self.image, colors)
+
+        cv2.rectangle(self.image, (0, 0), (640, 40), (245, 117, 16), -1)
+        cv2.putText(self.image, ' '.join(self.sentence), (3, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+
+        self.image_frame = self.image
+        buffer = cv2.flip(frame, 0).tostring()
+        texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
+        texture.blit_buffer(buffer, colorfmt='bgr', bufferfmt='ubyte')
+
+        widget = self.ids.result.get_screen('model')
+        widget.ids.image.texture = texture
+
+
 class VideoDisplay(MDScreen):
     pass
 
+class VideoSimulate(MDScreen):
+    pass
 
 class Signify(MDApp):
     def __init__(self, **kwargs):
