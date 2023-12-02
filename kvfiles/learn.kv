@@ -1,3 +1,31 @@
+<ContentCard>:
+    on_release: root.parent.parent.parent.parent.parent.parent.choose_word(self)
+
+<LearnPage>:
+    name: "learn_page"
+    MDScreenManager:
+        id: learn_screen
+        RecentLearn
+        Lesson
+        TopicLearn
+        FlashCard
+        MultipleChoice
+        Score
+        LearnSimulate
+
+<LearnSimulate@MDScreen>:
+    name: 'model'
+    Image:
+        id: image
+        pos_hint: {'center_x': .5, 'center_y': .6}
+
+    MDLabel:
+        pos_hint: {'center_x': .5, 'center_y': .2}
+        halign: 'center'
+        font_name: 'Bold'
+        font_size: '26sp'
+        text: 'Bạn hãy thử thực hiện hành động trước camera'
+        color: '02ad66'
 
 <RecentLearn@MDScreen>:
     name: 'recent_learn'
@@ -370,16 +398,7 @@
 
 
 
-<LearnPage>:
-    name: "learn_page"
-    MDScreenManager:
-        id: learn_screen
-        RecentLearn
-        Lesson
-        TopicLearn
-        FlashCard
-        MultipleChoice
-        Score
+
 
 
 
