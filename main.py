@@ -117,6 +117,10 @@ class LearnPage(MDScreen):
         self.ids.learn_screen.current = 'model'
         self.ids.learn_screen.transition.direction = 'left'
 
+    def exit_simulate(self):
+        self.ids.learn_screen.current = 'flash_card'
+        self.ids.learn_screen.transition.direction = 'right'
+
     def removes_marks_all_chips(self, selected_instance_chip):
         for instance_chip in self.ids.chip_box.children:
             if instance_chip != selected_instance_chip:
@@ -464,20 +468,17 @@ class SearchPage(MDScreen):
         self.word = card.word
 
         widget = self.ids.result.get_screen('video')
-
-        region = 'Toàn quốc' if 'Toàn quốc' in qs.subjects[self.topic]['content'][self.word]['videoURL'] else 'Miền Bắc'
         content = qs.subjects[self.topic]['content'][self.word]
+
+        region = 'Toàn quốc' if 'Toàn quốc' in content['videoURL'] else 'Miền Bắc'
 
         widget.ids.video_source.source = content['videoURL'][region]
         widget.ids.word.text = self.word
         widget.ids.description.text = content['description']
 
-        if 'model_path' in qs.subjects[self.topic]['content'][self.word]:
+        if 'model_path' in content:
             widget.ids.simulate_button.opacity = 1.0
             widget.ids.simulate_button.disabled = False
-            self.model_checkpoints = qs.subjects[self.topic]['content'][self.word]['model_checkpoints']
-            self.model = md_loader.load_model(qs.subjects[self.topic]['content'][self.word]['model_path'], self.model_checkpoints)
-            self.actions = camera.convert_to_str(list(range(0, self.model_checkpoints)))
         else:
             widget.ids.simulate_button.opacity = 0.0
             widget.ids.simulate_button.disabled = True
@@ -487,6 +488,11 @@ class SearchPage(MDScreen):
 
     def start_camera(self):
         self.cap = cv2.VideoCapture(0)
+
+        content = qs.subjects[self.topic]['content'][self.word]
+        self.model_checkpoints = content['model_checkpoints']
+        self.model = md_loader.load_model(content['model_path'], self.model_checkpoints)
+        self.actions = camera.convert_to_str(list(range(0, self.model_checkpoints)))
 
     def stop_camera(self):
         self.cap.release()
@@ -547,7 +553,7 @@ class SearchPage(MDScreen):
         widget = self.ids.result.get_screen('model')
         widget.ids.image.texture = texture
 
-        if len(self.sentence) == self.model_checkpoints - 1 and np.argmax(res) == 0:
+        if len(self.sentence) == self.model_checkpoints - 1 and np.unique(self.predictions[-5:])[0] == 0:
             widget.ids.simulate_success.text = "Success"
 
 

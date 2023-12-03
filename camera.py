@@ -51,8 +51,8 @@ def convert_to_str(items):
 if __name__ == '__main__':
 
     action_of_choice = "qtpn"
-    model = md_loader.load_model(md_loader.model_catalogue[action_of_choice])
-    actions = convert_to_str(list(range(0, md_loader.model_catalogue[action_of_choice]["no_of_states"])))
+    model = md_loader.load_model('model/holiday/gpmn.h5', 5)
+    actions = convert_to_str(list(range(0, 5)))
 
     sequence = []
     sentence = []
@@ -93,9 +93,9 @@ if __name__ == '__main__':
 
                 image = prob_viz(res, actions, image, colors)
 
-            cv2.rectangle(image, (0,0), (640, 40), (245, 117, 16), -1)
-            cv2.putText(image, ' '.join(sentence), (3,30),
-                           cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+            # cv2.rectangle(image, (0,0), (640, 40), (245, 117, 16), -1)
+            # cv2.putText(image, ' '.join(sentence), (3,30),
+            #                cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
 
             cv2.imshow('OpenCV Feed', image)
 
