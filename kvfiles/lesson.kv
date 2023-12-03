@@ -16,7 +16,6 @@
     halign:'center'
     pos_hint:{'center_x': .5, 'center_y': .5}
 
-
 <Lesson>:
     name: 'lesson'
     MDFloatLayout:
@@ -105,7 +104,9 @@
         font_name: 'Bold'
         pos_hint: {'center_x': .3, 'center_y': .05}
         size_hint_x: .3
-        on_press: root.parent.parent.show_flash_card()
+        on_press:
+            root.parent.parent.current_word = 0
+            root.parent.parent.show_flash_card()
 
     MDFillRoundFlatButton:
         md_bg_color: 'FBB237'
@@ -114,3 +115,86 @@
         pos_hint: {'center_x': .7, 'center_y': .05}
         size_hint_x: .3
         on_press: root.parent.parent.show_multiple_choice()
+
+
+<FlashCard>:
+    name: 'flash_card'
+    MDFloatLayout:
+        size_hint: 1, .1
+        pos_hint: {'center_x': .5, 'center_y': .95}
+        md_bg_color: 'F5F5DC'
+        TooltipMDIconButton:
+            icon: "arrow-left-circle"
+            tooltip_text: 'Quay lại'
+            pos_hint: {'center_y': .5}
+            on_press:
+                root.parent.current = 'lesson'
+                root.parent.transition.direction = 'right'
+
+        MDLabel:
+            id: topic_name
+            text: 'Bảng chữ cái'
+            font_name: 'Bold'
+            font_size: '28sp'
+            halign: 'center'
+            pos_hint: {'center_x': .5, 'top': 1}
+
+    MDProgressBar:
+        value: 10
+        height: '2dp'
+        color: '26ab57'
+        pos_hint: {"center_x": .5, 'center_y': .9}
+
+    MDFloatLayout:
+        size_hint: 1, .9
+        pos_hint: {'center_x': .5, 'center_y': .45}
+
+        VideoPlayer:
+            id: video_source
+            source: ''
+#            state: 'play'
+            options: {'eos': 'stop'}
+            size_hint: .5, .7
+            pos_hint: {'center_x': .5, 'center_y': .62}
+
+        MDLabel:
+            id: word
+            text: 'Chào buổi sáng'
+            font_name: 'Bold'
+            font_size: '26sp'
+            pos_hint: {'center_x': .5, 'center_y': .25}
+            halign: 'center'
+
+        MDLabel:
+            id: description
+            text: 'Chào buổi sáng'
+            font_name: 'Light'
+            font_size: '12sp'
+            size_hint_x: .5
+            pos_hint: {'center_x': .5, 'center_y': .18}
+            halign: 'center'
+
+
+        MDFillRoundFlatButton:
+            md_bg_color: '02a884'
+            font_name: 'Bold'
+            text: 'Thử mô phỏng lại'
+            size_hint_x: .3
+            pos_hint: {'center_x': .5, 'center_y': .11}
+            on_press:
+                root.parent.parent.show_simulate()
+
+        MDFillRoundFlatButton:
+            font_name: 'Bold'
+            text: 'Tiếp tục'
+            size_hint_x: .3
+            pos_hint: {'center_x': .7, 'center_y': .04}
+            on_press: root.parent.parent.next_flash_card(1)
+
+        MDFillRoundFlatButton:
+            font_name: 'Bold'
+            text: 'Quay lại từ trước'
+            md_bg_color: 'f56d05'
+            size_hint_x: .3
+            pos_hint: {'center_x': .3, 'center_y': .04}
+            on_press: root.parent.parent.next_flash_card(-1)

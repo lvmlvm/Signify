@@ -105,11 +105,17 @@ class LearnPage(MDScreen):
         self.subjects = None
         self.topic = None
 
+        self.word = None
+
         self.current_word = 0
         self.words = []
         self.questions = []
         self.current_q = 0
         self.true_cnt = 0
+
+    def show_simulate(self):
+        self.ids.learn_screen.current = 'model'
+        self.ids.learn_screen.transition.direction = 'left'
 
     def removes_marks_all_chips(self, selected_instance_chip):
         for instance_chip in self.ids.chip_box.children:
@@ -128,13 +134,20 @@ class LearnPage(MDScreen):
         self.words.clear()
         for word in self.subjects[topic]['content'].keys():
             self.words.append(word)
-            view.add_widget(ContentCard(self.subjects[topic]['content'], word))
+            view.add_widget(ContentCard(self.subjects[topic]['content'], word, topic))
 
         self.ids.learn_screen.current = 'lesson'
         self.ids.learn_screen.transition.direction = 'left'
 
+    def choose_word(self, card):
+        for i in range(len(self.words)):
+            if self.words[i] == card.word:
+                self.current_word = i
+                break
+
+        self.show_flash_card()
+
     def show_flash_card(self):
-        self.current_word = 0
         self.change_flash_card()
 
         self.ids.learn_screen.current = 'flash_card'
@@ -246,6 +259,8 @@ class ContentCard(MDCard):
         super().__init__(*args, **kwargs)
         content = args[0]
         word = args[1]
+        self.word = word
+        self.topic = args[2]
 
         self.orientation = 'vertical'
         self.padding = '8dp'
