@@ -43,6 +43,9 @@ import model.model_loader as md_loader
 import camera
 
 # Window.fullscreen = 'auto'
+Window.size = RESOLUTION
+Window.top = 100
+Window.left = 100
 Builder.load_file('kvfiles/profile.kv')
 Builder.load_file('kvfiles/learn.kv')
 Builder.load_file('kvfiles/quiz.kv')
@@ -364,7 +367,7 @@ class Score(MDScreen):
 
 
 class SearchPage(MDScreen):
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs):        
         super().__init__(**kwargs)
         self.trie = dictionary.Trie()
         self.num_word = 15
@@ -372,23 +375,25 @@ class SearchPage(MDScreen):
         self.menu = None
         self.cnt = 0
 
+        # Card content
+        self.topic = None
+        self.word = None
+
         # Model
         self.show_capture = False
-        Clock.schedule_interval(self.load_image, 1.0 / 120)
+        Clock.schedule_interval(self.load_image, 1.0 / 300)
 
         self.image = None
         self.capture = None
 
-        self.action_of_choice = "qtpn"
-        self.model = md_loader.load_model(md_loader.model_catalogue[self.action_of_choice])
-        self.actions = camera.convert_to_str(
-            list(range(0, md_loader.model_catalogue[self.action_of_choice]["no_of_states"])))
+        self.model = None
+        self.model_checkpoints = 0
+        self.actions = []
 
         self.sequence = []
         self.sentence = []
         self.predictions = []
-        self.threshold = 0.8
-
+        self.threshold = 0.9
         self.cap = cv2.VideoCapture(0)
 
         self.holistic = mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5)
@@ -440,20 +445,41 @@ class SearchPage(MDScreen):
             self.ids.screen_manager.transition.direction = 'left'
 
     def show_video(self, card):
-        topic = card.topic
-        word = card.word
+        self.topic = card.topic
+        self.word = card.word
 
         widget = self.ids.result.get_screen('video')
 
-        region = 'Toàn quốc' if 'Toàn quốc' in qs.subjects[topic]['content'][word]['videoURL'] else 'Miền Bắc'
-        content = qs.subjects[topic]['content'][word]
+        region = 'Toàn quốc' if 'Toàn quốc' in qs.subjects[self.topic]['content'][self.word]['videoURL'] else 'Miền Bắc'
+        content = qs.subjects[self.topic]['content'][self.word]
 
         widget.ids.video_source.source = content['videoURL'][region]
-        widget.ids.word.text = word
+        widget.ids.word.text = self.word
         widget.ids.description.text = content['description']
+
+        if 'model_path' in qs.subjects[self.topic]['content'][self.word]:
+            widget.ids.simulate_button.opacity = 1.0
+            widget.ids.simulate_button.disabled = False
+            self.model_checkpoints = qs.subjects[self.topic]['content'][self.word]['model_checkpoints']
+            self.model = md_loader.load_model(qs.subjects[self.topic]['content'][self.word]['model_path'], self.model_checkpoints)
+            self.actions = camera.convert_to_str(list(range(0, self.model_checkpoints)))
+        else:
+            widget.ids.simulate_button.opacity = 0.0
+            widget.ids.simulate_button.disabled = True
 
         self.ids.result.current = 'video'
         self.ids.result.transition.direction = 'left'
+
+    def start_camera(self):
+        self.cap = cv2.VideoCapture(0)
+
+    def stop_camera(self):
+        self.cap.release()
+        widget = self.ids.result.get_screen('model')
+        widget.ids.simulate_success.text = ""
+
+        self.sentence = []
+        self.sequence = []
 
     def simulate(self):
         pass
@@ -464,23 +490,20 @@ class SearchPage(MDScreen):
             return
 
         ret, frame = self.cap.read()
-
         self.image, results = camera.mediapipe_detection(frame, self.holistic)
-        print(results)
 
         camera.draw_styled_landmarks(self.image, results)
 
         keypoints = camera.extract_keypoints(results)
         self.sequence.append(keypoints)
-        sequence = self.sequence[-5:]
+        self.sequence = self.sequence[-5:]
 
-        if len(sequence) == 5:
-            res = self.model.predict(np.expand_dims(sequence, axis=0))[0]
-            print(self.actions[np.argmax(res)])
+        if len(self.sequence) == 5:
+            res = self.model.predict(np.expand_dims(self.sequence, axis=0))[0]
             self.predictions.append(np.argmax(res))
 
             if res[np.argmax(res)] > self.threshold:
-                if np.unique(self.predictions[-5:])[0] == np.argmax(res):
+                if np.unique(self.predictions[-3:])[0] == np.argmax(res):
                     if len(self.sentence) > 0:
                         if (self.actions[np.argmax(res)] != self.sentence[-1] and np.argmax(res) != 0 and
                                 self.actions[np.argmax(res)] not in self.sentence):
@@ -498,13 +521,19 @@ class SearchPage(MDScreen):
         cv2.putText(self.image, ' '.join(self.sentence), (3, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
 
+        # image_vector = (self.image.shape[1], self.image.shape[0])
+        # self.image = cv2.resize(self.image, image_vector * 2)
+
         self.image_frame = self.image
-        buffer = cv2.flip(frame, 0).tostring()
-        texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
+        buffer = cv2.flip(self.image_frame, 0).tostring()
+        texture = Texture.create(size=(self.image_frame.shape[1], self.image_frame.shape[0]), colorfmt='bgr')
         texture.blit_buffer(buffer, colorfmt='bgr', bufferfmt='ubyte')
 
         widget = self.ids.result.get_screen('model')
         widget.ids.image.texture = texture
+
+        if len(self.sentence) == self.model_checkpoints - 1 and np.argmax(res) == 0:
+            widget.ids.simulate_success.text = "Success"
 
 
 class VideoDisplay(MDScreen):

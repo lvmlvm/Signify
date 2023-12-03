@@ -31,6 +31,7 @@
             halign: 'center'
 
         MDFillRoundFlatButton:
+            id: simulate_button
             font_name: 'Bold'
             text: 'Thử mô phỏng lại'
             size_hint_x: .3
@@ -38,6 +39,7 @@
             on_press:
                 root.parent.current = 'model'
                 root.parent.transition.direction = 'left'
+                root.parent.parent.start_camera()
                 root.parent.parent.show_capture = True
 
         MDFillRoundFlatButton:
@@ -64,3 +66,24 @@
         font_size: '26sp'
         text: 'Bạn hãy thử thực hiện hành động trước camera'
         color: '02ad66'
+
+    MDLabel:
+        id: simulate_success
+        pos_hint: {'center_x': .5, 'center_y': .9}
+        halign: 'center'
+        font_name: 'Bold'
+        font_size: '26sp'
+        text: ''
+        color: '02ad66'
+
+    MDFillRoundFlatButton:
+        font_name: 'Bold'
+        text: 'Quay lại'
+        md_bg_color: 'f56d05'
+        size_hint_x: .3
+        pos_hint: {'center_x': .5, 'center_y': .04}
+        on_press:
+            root.parent.current = 'main'
+            root.parent.transition.direction = 'right'
+            root.parent.parent.show_capture = False
+            root.parent.parent.stop_camera()

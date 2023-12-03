@@ -318,7 +318,9 @@ subjects = {  # Bảng chữ cái, Ngày lễ, Chữ số
                     'Miền Bắc': 'assets/subjects/holiday/video/D0042B.mp4',
                     'Miền Trung': 'assets/subjects/holiday/video/D0042T.mp4',
                     'Miền Nam': 'assets/subjects/holiday/video/D0042N.mp4'
-                }
+                },
+                'model_path': 'model/holiday/qtpn.h5',
+                'model_checkpoints': 4
             },
             'Ngày giải phóng Thủ đô': {
                 'description': 'Diễn ra vào ngày 10/10 hằng năm, ngày 10/10/1954 Thủ đô Hà Nội chính thức hoàn toàn được giải phóng khỏi thực dân Pháp.',
@@ -327,7 +329,9 @@ subjects = {  # Bảng chữ cái, Ngày lễ, Chữ số
                     'Miền Bắc': 'assets/subjects/holiday/video/D0043B.mp4',
                     'Miền Trung': 'assets/subjects/holiday/video/D0043T.mp4',
                     'Miền Nam': 'assets/subjects/holiday/video/D0043N.mp4'
-                }
+                },
+                'model_path': 'model/holiday/gptd.h5',
+                'model_checkpoints': 5
             },
             'Ngày giải phóng miền Nam': {
                 'description': 'Diễn ra vào ngày 30/4 hằng năm, kỷ niệm ngày 30/4/1975 Giải phóng Miền Nam, thống nhất đất nước.',
@@ -336,7 +340,9 @@ subjects = {  # Bảng chữ cái, Ngày lễ, Chữ số
                     'Miền Bắc': 'assets/subjects/holiday/video/D0044B.mp4',
                     'Miền Trung': 'assets/subjects/holiday/video/D0044T.mp4',
                     'Miền Nam': 'assets/subjects/holiday/video/D0044N.mp4'
-                }
+                },
+                'model_path': 'model/holiday/gpmn.h5',
+                'model_checkpoints': 5
             },
             'Ngày Người khuyết tật Việt Nam': {
                 'description': 'Diễn ra vào ngày 18/4 hằng năm, ngày vì quyền lợi của người khuyết tật ở Việt Nam.',
