@@ -1,0 +1,117 @@
+[
+    {
+        "email": "asd@gmail.com",
+        "password": "123456",
+        "name": "Nguyễn Văn A",
+        "region": "Toàn quốc",
+        "following_emails": [],
+        "achievements": {
+            "complete_first_quiz": {
+                "name": "Thành thạo!",
+                "description": "Đạt điểm tuyệt đối cho tất cả chủ đề.",
+                "_Achievement__current": 0,
+                "weight": 15,
+                "max": 3,
+                "img_url": "assets/images/achievement/demo.png",
+                "_Achievement__increment": true
+            },
+            "hardwork": {
+                "name": "Siêng năng!",
+                "description": "Thực hiện 10 bài luyện tập.",
+                "_Achievement__current": 0,
+                "weight": 7,
+                "max": 10,
+                "img_url": "assets/images/achievement/demo.png",
+                "_Achievement__increment": true
+            },
+            "champion": {
+                "name": "Vô địch!",
+                "description": "Tích lũy nhiều điểm thành tích hơn tất cả những người khác.\nBạn phải tiếp tục bỏ xa họ ít nhất 50 điểm nếu muốn duy trì ngôi vị.\n",
+                "_Achievement__current": 0,
+                "weight": 49,
+                "max": 1,
+                "img_url": "assets/images/achievement/demo.png",
+                "_Achievement__increment": true
+            },
+            "veteran": {
+                "name": "Kỳ cựu!",
+                "description": "Là thành viên của đại gia đình Signify được 100 ngày.",
+                "_Achievement__current": 0,
+                "weight": 8,
+                "max": 100,
+                "img_url": "assets/images/achievement/demo.png",
+                "_Achievement__increment": true
+            },
+            "famous": {
+                "name": "Nổi tiếng!",
+                "description": "Được 10 người theo dõi.",
+                "_Achievement__current": 0,
+                "weight": 8,
+                "max": 10,
+                "img_url": "assets/images/achievement/demo.png",
+                "_Achievement__increment": true
+            },
+            "do_first_quiz": {
+                "name": "Thử thách đầu tiên!",
+                "description": "Trải nghiệm bài luyện tập đầu tiên của Signify.",
+                "_Achievement__current": 0,
+                "weight": 1,
+                "max": 1,
+                "img_url": "assets/images/achievement/demo.png",
+                "_Achievement__increment": true
+            },
+            "do_first_lesson": {
+                "name": "Bài học đầu tiên!",
+                "description": "Trải nghiệm bài học đầu tiên của Signify.",
+                "_Achievement__current": 0,
+                "weight": 1,
+                "max": 1,
+                "img_url": "assets/images/achievement/demo.png",
+                "_Achievement__increment": true
+            },
+            "complete_first_question": {
+                "name": "Bài học đầu tiên!",
+                "description": "Trải nghiệm bài học đầu tiên của Signify.",
+                "_Achievement__current": 0,
+                "weight": 1,
+                "max": 1,
+                "img_url": "assets/images/achievement/demo.png",
+                "_Achievement__increment": true
+            },
+            "near_complete_quiz": {
+                "name": "Bài học đầu tiên!",
+                "description": "Trải nghiệm bài học đầu tiên của Signify.",
+                "_Achievement__current": 0,
+                "weight": 1,
+                "max": 1,
+                "img_url": "assets/images/achievement/demo.png",
+                "_Achievement__increment": true
+            }
+        },
+        "progress": {
+            "Bảng chữ cái": {
+                "lesson_current": null,
+                "_Progress__quiz_completion": 0,
+                "recency": null
+            },
+            "Ngày lễ": {
+                "lesson_current": null,
+                "_Progress__quiz_completion": 0,
+                "recency": null
+            },
+            "Chữ số": {
+                "lesson_current": null,
+                "_Progress__quiz_completion": 0,
+                "recency": null
+            }
+        },
+        "creation_date": {
+            "year": 2023,
+            "month": 12,
+            "day": 4,
+            "hour": 15,
+            "minute": 13,
+            "second": 41
+        }
+    }
+]
