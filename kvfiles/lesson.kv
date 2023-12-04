@@ -16,6 +16,11 @@
     halign:'center'
     pos_hint:{'center_x': .5, 'center_y': .5}
 
+<RegionCheck@MDCheckbox>:
+    group: 'region_list'
+    size_hint: None, None
+    size: dp(48), dp(48)
+
 <Lesson>:
     name: 'lesson'
     MDFloatLayout:
@@ -48,23 +53,28 @@
             spacing: "4dp"
             pos_hint: {'right': 1, 'center_y': .5}
 
-            MDCheckbox:
+            RegionCheck:
                 active: True
-                on_press:
+                pos_hint: {'center_y': .5}
+                on_press: root.parent.parent.current_region = "Miền Bắc"
 
             MDLabel:
                 font_name: 'Bold'
                 color: 'white'
                 text: 'Miền Bắc'
 
-            MDCheckbox:
+            RegionCheck:
+                pos_hint: {'center_y': .5}
+                on_press: root.parent.parent.current_region = "Miền Trung"
 
             MDLabel:
                 font_name: 'Bold'
                 color: 'white'
                 text: 'Miền Trung'
 
-            MDCheckbox:
+            RegionCheck:
+                pos_hint: {'center_y': .5}
+                on_press: root.parent.parent.current_region = "Miền Nam"
 
             MDLabel:
                 font_name: 'Bold'
@@ -180,7 +190,7 @@
             id: simulate_button
             md_bg_color: '02a884'
             font_name: 'Bold'
-            text: 'Thử mô phỏng lại'
+            text: 'Luyện tập mô phỏng'
             size_hint_x: .3
             pos_hint: {'center_x': .5, 'center_y': .11}
             on_press:

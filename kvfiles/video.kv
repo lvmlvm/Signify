@@ -33,7 +33,7 @@
         MDFillRoundFlatButton:
             id: simulate_button
             font_name: 'Bold'
-            text: 'Thử mô phỏng lại'
+            text: 'Luyện tập mô phỏng'
             size_hint_x: .3
             pos_hint: {'center_x': .5, 'center_y': .11}
             on_press:
@@ -83,7 +83,7 @@
         size_hint_x: .3
         pos_hint: {'center_x': .5, 'center_y': .04}
         on_press:
-            root.parent.current = 'main'
+            root.parent.current = 'video'
             root.parent.transition.direction = 'right'
             root.parent.parent.show_capture = False
             root.parent.parent.stop_camera()

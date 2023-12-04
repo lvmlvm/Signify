@@ -27,6 +27,15 @@
         text: 'Bạn hãy thử thực hiện hành động trước camera'
         color: '02ad66'
 
+    MDLabel:
+        id: simulate_success
+        pos_hint: {'center_x': .5, 'center_y': .9}
+        halign: 'center'
+        font_name: 'Bold'
+        font_size: '26sp'
+        text: ''
+        color: '02ad66'
+
     MDFillRoundFlatButton:
         font_name: 'Bold'
         text: 'Quay lại'
@@ -34,6 +43,8 @@
         size_hint_x: .3
         pos_hint: {'center_x': .5, 'center_y': .04}
         on_press:
+            root.parent.current = 'flash_card'
+            root.parent.transition.direction = 'right'
             root.parent.parent.exit_simulate()
     
 

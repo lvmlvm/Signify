@@ -107,19 +107,52 @@ class LearnPage(MDScreen):
 
         self.word = None
 
+        self.current_region = "Miền Bắc"
         self.current_word = 0
         self.words = []
         self.questions = []
         self.current_q = 0
         self.true_cnt = 0
 
+        # Action detection
+        self.show_capture = False
+        Clock.schedule_interval(self.load_image, 1.0 / 300)
+
+        self.image = None
+        self.capture = None
+
+        self.model = None
+        self.model_checkpoints = 0
+        self.actions = []
+
+        self.sequence = []
+        self.sentence = []
+        self.predictions = []
+        self.threshold = 0.9
+        self.cap = cv2.VideoCapture(0)
+        self.holistic = mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5)
+
     def show_simulate(self):
         self.ids.learn_screen.current = 'model'
         self.ids.learn_screen.transition.direction = 'left'
 
+        self.cap = cv2.VideoCapture(0)
+
+        content = qs.subjects[self.topic]['content'][self.word]
+        self.model_checkpoints = content['model_checkpoints']
+        self.model = md_loader.load_model(content['model_path'], self.model_checkpoints)
+        self.actions = camera.convert_to_str(list(range(0, self.model_checkpoints)))
+
+        self.show_capture = True
+
     def exit_simulate(self):
-        self.ids.learn_screen.current = 'flash_card'
-        self.ids.learn_screen.transition.direction = 'right'
+        self.cap.release()
+        self.show_capture = False
+        self.sentence = []
+        self.sequence = []
+
+        widget = self.ids.learn_screen.get_screen('model')
+        widget.ids.simulate_success.text = ""
 
     def removes_marks_all_chips(self, selected_instance_chip):
         for instance_chip in self.ids.chip_box.children:
@@ -168,12 +201,13 @@ class LearnPage(MDScreen):
         widget.ids.topic_name.text = self.topic
 
         cur_word = self.words[self.current_word]
+        self.word = cur_word
         content = self.subjects[self.topic]['content'][cur_word]
 
         widget.ids.word.text = cur_word
         widget.ids.description.text = content['description']
 
-        region = 'Toàn quốc' if 'Toàn quốc' in content['videoURL'].keys() else 'Miền Bắc'
+        region = 'Toàn quốc' if 'Toàn quốc' in content['videoURL'].keys() else self.current_region
 
         widget.ids.video_source.source = content['videoURL'][region]
 
@@ -224,7 +258,7 @@ class LearnPage(MDScreen):
 
         widget.ids.bar.value = (self.current_q + 1) * 10
 
-        region = 'Toàn quốc' if 'Toàn quốc' in self.questions[self.current_q]['videoURL'] else 'Miền Bắc'
+        region = 'Toàn quốc' if 'Toàn quốc' in self.questions[self.current_q]['videoURL'] else self.current_region
         widget.ids.video.source = self.questions[self.current_q]['videoURL'][region]
 
     def check_answer(self, obj):
@@ -240,6 +274,55 @@ class LearnPage(MDScreen):
             self.answer_card = AnswerCard(False, answer)
 
         widget.add_widget(self.answer_card)
+    
+    def load_image(self, *args):
+
+        if not self.show_capture:
+            return
+
+        ret, frame = self.cap.read()
+        self.image, results = camera.mediapipe_detection(frame, self.holistic)
+
+        camera.draw_styled_landmarks(self.image, results)
+
+        keypoints = camera.extract_keypoints(results)
+        self.sequence.append(keypoints)
+        self.sequence = self.sequence[-5:]
+
+        if len(self.sequence) == 5:
+            res = self.model.predict(np.expand_dims(self.sequence, axis=0))[0]
+            self.predictions.append(np.argmax(res))
+
+            if res[np.argmax(res)] > self.threshold:
+                if np.unique(self.predictions[-3:])[0] == np.argmax(res):
+                    if len(self.sentence) > 0:
+                        if (self.actions[np.argmax(res)] != self.sentence[-1] and np.argmax(res) != 0 and
+                                self.actions[np.argmax(res)] not in self.sentence):
+                            self.sentence.append(self.actions[np.argmax(res)])
+                    else:
+                        if np.argmax(res) != 0:
+                            self.sentence.append(self.actions[np.argmax(res)])
+
+            if len(self.sentence) > 5:
+                self.sentence = self.sentence[-5:]
+
+            self.image = camera.prob_viz(res, self.actions, self.image, colors)
+
+        cv2.rectangle(self.image, (0, 0), (640, 40), (245, 117, 16), -1)
+        cv2.putText(self.image, ' '.join(self.sentence), (3, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+
+        self.image = cv2.resize(self.image, (int(float(self.image.shape[1]) * 1.5), int(float(self.image.shape[0]) * 1.5)))
+        self.image_frame = self.image
+        buffer = cv2.flip(self.image_frame, 0).tostring()
+        texture = Texture.create(size=(self.image_frame.shape[1], self.image_frame.shape[0]), colorfmt='bgr')
+        texture.blit_buffer(buffer, colorfmt='bgr', bufferfmt='ubyte')
+
+        widget = self.ids.learn_screen.get_screen('model')
+        widget.ids.image.texture = texture
+
+        if len(self.sentence) == self.model_checkpoints - 1 and np.unique(self.predictions[-5:])[0] == 0:
+            widget.ids.simulate_success.text = "Success"
 
 
 class AnswerCard(MDCard):
@@ -542,9 +625,7 @@ class SearchPage(MDScreen):
         cv2.putText(self.image, ' '.join(self.sentence), (3, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
 
-        # image_vector = (self.image.shape[1], self.image.shape[0])
-        # self.image = cv2.resize(self.image, image_vector * 2)
-
+        self.image = cv2.resize(self.image, (int(float(self.image.shape[1]) * 1.5), int(float(self.image.shape[0]) * 1.5)))
         self.image_frame = self.image
         buffer = cv2.flip(self.image_frame, 0).tostring()
         texture = Texture.create(size=(self.image_frame.shape[1], self.image_frame.shape[0]), colorfmt='bgr')
