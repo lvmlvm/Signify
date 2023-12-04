@@ -1,9 +1,10 @@
 from question import subjects
-from io import *
+from io import open
 import json
 import datetime as dt
-''' Tạo pm = ProjectManager() lúc khởi tạo app
-    Sau khi đăng nhập/đăng kí thì thao tác phía người dùng qua pm.user: Profile
+''' 
+    Phải import pm = ProfileManager() đã được khai báo
+    Sau khi đăng nhập/đăng kí thì thao tác phía người dùng qua pm.user
 '''
 
 def json_default(o):
@@ -13,13 +14,14 @@ def json_default(o):
         return o.__dict__
 
 class Achievement:
-    def __init__(self, name: str = '', description: str = '', __current: int = 0, max: int = 0, weight = 0, img_url: str = 'assets/images/achievement/demo.png') -> None:
+    def __init__(self, name: str = '', description: str = '', __increment: bool = True,__current: int = 0, max: int = 0, weight = 0, img_url: str = 'assets/images/achievement/demo.png') -> None:
         self.name = name        #tên
         self.description = description  #mô tả
         self.__current = __current  #tiến độ hiện tại, dùng property self.current
         self.weight = weight    #Độ nổi bật aka độ khó, tạm thời dùng để sort, có thể dùng để tính tổng điểm achievement
         self.max = max          #tiến độ tối đa
         self.img_url = img_url  #url hình ảnh
+        self.__increment = __increment  #chỉ tăng hoặc có thể giảm
     
     @property
     def completed(self) -> bool:
@@ -31,41 +33,80 @@ class Achievement:
     
     @current.setter
     def current(self, value: int):
-        if value > self.__current:
-            if value >= self.max: self.__current = self.max
+        if (not self.__increment) or value > self.__current:
+            if value >= self.max: 
+                self.__current = self.max
+                self.on_completed()
             elif value >= 0: self.__current = value
             else: self.__current = 0
+    
+    def on_completed(self):
+        if pm.user == None: return
+        for p in pm.profiles:
+            if pm.user is p: continue
+            if pm.user.achievements.champion.completed:
+                if pm.user.achievements.total_score - p.achievements.total_score < 50:
+                    pm.user.achievements.champion.__current = 0
+            elif pm.user.achievements.total_score > p.achievements.total_score:
+                pm.user.achievements.champion.__current = 1         #ko đc gọi setter
 
 class AchievementSet:
     '''Một bộ Achievement, ứng với mỗi hồ sơ người dùng
-    Đã cài đặt phần cập nhật:
+    Cần sung phần cập qua việc gọi các hàm on_...() và hiển thị giao diện chung.
+    Cái nào chưa cài đặt xong thì để đấy làm decoy,
+    lúc demo tạo trước tài khoản xong edit file profiles.json
     '''
     def __init__(self, **kwargs) -> None:
-        if kwargs.get('complete_first_quiz') != None:
+        if kwargs.get('complete_first_quiz') != None:   #gọi on_quiz_done()
             self.complete_first_quiz = Achievement(**kwargs.get('complete_first_quiz'))
         else:
-            self.complete_first_quiz = Achievement(max=100, weight=2, name='Điểm tuyệt đối đầu tiên', description='Lần đầu tiên hoàn thiện 100%% một bài luyện tập.')
+            self.complete_first_quiz = Achievement(max=100, weight=5, name='Điểm tuyệt đối đầu tiên!', description='Lần đầu tiên đạt điểm điểm tuyệt đối bài luyện tập.')
             
-        if kwargs.get('complete_all_quiz') != None:
+        if kwargs.get('complete_all_quiz') != None: #gọi on_quiz_done()
             self.complete_first_quiz = Achievement(**kwargs.get('complete_all_quiz'))
         else:
-            self.complete_all_quiz = Achievement(max=len(subjects), weight=len(subjects)*2, name='Thành thạo', description='Hoàn thiện 100%% các bài luyện tập của tất cả chủ đề.')
+            self.complete_all_quiz = Achievement(max=len(subjects), weight=len(subjects)*5, name='Thành thạo!', description='Đạt điểm tuyệt đối cho tất cả chủ đề.')
         
-        #Dùng cho demo
-        if kwargs.get('do_first_quiz') != None:
-            self.do_first_quiz = Achievement(**kwargs.get('do_first_quiz'))
-        else:
-            self.do_first_quiz= Achievement(max=1, weight=1, name='Chập chững', description='Trải nghiệm bài luyện tập đầu tiên của bạn.')
-        
-        if kwargs.get('hardwork') != None:
+        if kwargs.get('hardwork') != None:  #gọi on_quiz_done()
             self.hardwork = Achievement(**kwargs.get('hardwork'))
         else:
-            self.hardwork = Achievement(max=10, weight=2, name='Chăm chỉ', description='Thực hiện 10 bài luyện tập.')
+            self.hardwork = Achievement(max=10, weight=7, name='Siêng năng!', description='Thực hiện 10 bài luyện tập.')
         
-        if kwargs.get('veteran') != None:
+        if kwargs.get('champion') != None:   #đại khái đã implement xong phần update
+            self.champion = Achievement(**kwargs.get('champion'))
+        else:
+            self.champion = Achievement(max=1, weight=49, name='Vô địch!', description='Tích lũy nhiều điểm thành tích hơn tất cả những người khác.\nBạn phải tiếp tục bỏ xa họ ít nhất 50 điểm nếu muốn duy trì ngôi vị.\n')
+        
+        if kwargs.get('veteran') != None:   #đại khái đã implement xong phần update
             self.veteran = Achievement(**kwargs.get('veteran'))
         else:
-            self.veteran = Achievement(max=100, weight=5, name='Kỳ cựu', description='Là thành viên của đại gia đình Signify được 100 ngày.')
+            self.veteran = Achievement(max=100, weight=8, name='Kỳ cựu!', description='Là thành viên của đại gia đình Signify được 100 ngày.')
+            
+        if kwargs.get('famous') != None:   #đại khái đã implement xong phần update
+            self.famous = Achievement(**kwargs.get('famous'))
+        else:
+            self.famous = Achievement(max=10, weight=8, name='Nổi tiếng!', description='Được 10 người theo dõi.')
+
+        #Có thể dùng cho demo
+        if kwargs.get('do_first_quiz') != None: #gọi on_exit_quiz()
+            self.do_first_quiz = Achievement(**kwargs.get('do_first_quiz'))
+        else:
+            self.do_first_quiz= Achievement(max=1, weight=1, name='Thử thách đầu tiên!', description='Trải nghiệm bài luyện tập đầu tiên của Signify.')
+        
+        if kwargs.get('do_first_lesson') != None:   #gọi on_exit_lesson()
+            self.do_first_lesson = Achievement(**kwargs.get('do_first_lesson'))
+        else:
+            self.do_first_lesson= Achievement(max=1, weight=1, name='Bài học đầu tiên!', description='Trải nghiệm bài học đầu tiên của Signify.')
+        
+        if kwargs.get('complete_first_question') != None:   #gọi on_correct()
+            self.complete_first_question = Achievement(**kwargs.get('do_first_lesson'))
+        else:
+            self.complete_first_question = Achievement(max=1, weight=2, name='Chập chững!', description='Trả lời đúng câu hỏi đầu tiên.')
+        
+        if kwargs.get('near_complete_quiz') != None:    #gọi on_quiz_done()
+            self.near_complete_quiz = Achievement(**kwargs.get('do_first_lesson'))
+        else:
+            self.near_complete_quiz = Achievement(max=80, weight=4, name='Gần được rồi!', description='Đạt ít nhất 80%% số điểm bài luyện tập.')
             
     @property
     def total_score(self) -> int:
@@ -90,12 +131,12 @@ class AchievementSet:
     
 class Progress:    #Tiến độ học của một chủ đề
     """
-        ``learn_current`` (str): Mục (aka item, từ) đang học dở trong bài học.\n
+        ``lesson_current`` (str): Mục (aka item, từ) đang học dở trong bài học.\n
         ``quiz_completion`` (int): Tỉ lệ hoàn thiện bài luyện tập cao nhất 0-100. \n
         ``recency`` (datetime | None nếu chưa học/luyện tập lần nào): Thời điểm học/luyện tập gần nhất.
     """
-    def __init__(self, learn_current: str = None, __quiz_completion: int = 0, recency: dict = None) -> None:      
-        self.learn_current = learn_current
+    def __init__(self, lesson_current: str = None, __quiz_completion: int = 0, recency: dict = None) -> None:      
+        self.lesson_current = lesson_current
         self.__quiz_completion = __quiz_completion  #Dùng property
         if recency != None:
             self.recency = dt.datetime(**recency)
@@ -118,24 +159,25 @@ class Setting:
 
 class Profile:
     '''Mỗi profile ứng với 1 người dùng\n
-        Update progress và achivements thông qua các hàm on_...(), gọi hàm cho các event tương ứng.\n
+        Update progress và achivements thông qua các hàm on_...()\n
+        , gọi hàm cho các event tương ứng.\n
         ``email``,``password``,``name``: str\n
         ``achievements``: AchievementSet\n
         ``creation_date``: datetime.datetime\n
-        ``region``: str, None nếu chưa chọn\n
+        ``region``: 'Vùng miền mặc định', 'Toàn quốc' nếu chưa chọn\n
         ``following_emails``: list[str] truy vấn qua phương thức của ProfileManger\n
         ``progress``: dict = {\n
             'Chủ đề': Progress\n
             ...\n
         }
     '''
-    def __init__(self, email: str, password: str, name: str, region: str = None, following_emails: list[str] = [], progress: dict = None, achievements: dict = {}, creation_date: dict = None) -> None:
+    def __init__(self, email: str, password: str, name: str, region: str = 'Toàn quốc', following_emails: list[str] = [], progress: dict = None, achievements: dict = {}, creation_date: dict = None) -> None:
         
         self.email = email
         self.password = password
         self.name = name
         self.region = region
-        self.following_emails = following_emails                #Truy vấn qua hàm trong ProfileManager
+        self.following_emails = following_emails    #Truy vấn qua hàm trong ProfileManager
         self.achievements = AchievementSet(**achievements)
         self.progress: dict[str, Progress] = {}
         
@@ -151,44 +193,6 @@ class Profile:
         else:
             self.creation_date = dt.datetime.now()
             
-    def on_move_to_learing_item(self, subject: str, item: str):
-        self.progress[subject].learn_current = item
-    
-    def on_quiz_done(self, questionaire: str, score: int):
-        progress = self.progress[questionaire['name']]
-        
-        #Cập nhật progress
-        completion =  score * (100 / questionaire['size'])
-        if completion < progress.quiz_completion: return
-        progress.quiz_completion = completion
-        
-        #achievement hardwork
-        self.achievements.hardwork.current += 1
-        
-        #achievement complete_first_quiz, do_first_quiz
-        highest = 0
-        for sbj in subjects:
-            completion = self.progress[sbj].quiz_completion
-            if completion > highest:
-                highest = completion
-        self.achievements.complete_first_quiz.current = highest
-        self.achievements.do_first_quiz.current += 1
-                
-        # Cập nhật achievements complete_all_quiz
-        if progress.quiz_completion >= 100:
-            completed_cnt = 0
-            for sbj in subjects:
-                if self.progress[sbj].quiz_completion >= 100:
-                    completed_cnt += 1
-            self.achievements.complete_all_quiz.current = completed_cnt
-            
-    def on_open_learn_or_quiz(self, subject: str):
-        self.progress[subject].recency = dt.datetime.now()
-        
-    def on_login(self):#Đã gọi xong
-        #achievement veteran, tạm thời update ở đây thay vì trong vòng lặp
-        delta = dt.datetime.now() - self.creation_date
-        self.achievements.veteran.current = delta.days
         
 class ProfileManager:
     '''Quản lý hồ sơ người dùng hiện tại và toàn bộ người dùng.\n
@@ -233,7 +237,7 @@ class ProfileManager:
         if profile != None:
             if (profile.password == password):
                 self.user = profile
-                self.user.on_login()        #Có thể chuyến sang lúc hiển thị giao diện sau khi login thành công
+                self.on_login()        #Có thể chuyến sang lúc hiển thị giao diện sau khi login thành công
                 return self.user
             return 'Sai mật khẩu. Vui lòng nhập lại.'
         return 'Tài khoản không tồn tại.'
@@ -248,7 +252,7 @@ class ProfileManager:
         if profile == None:
             self.user = Profile(email=email, password=password, name=name)
             self.profiles.append(self.user)
-            self.user.on_login()        #Có thể chuyến sang lúc hiển thị giao diện sau khi login thành công
+            self.on_login()        #Có thể chuyến sang lúc hiển thị giao diện sau khi login thành công
             return self.user
         return 'Email đã tồn tại. Vui lòng chọn email khác.'
     
@@ -280,7 +284,7 @@ class ProfileManager:
                     matchings.append(profile)
         return matchings
     
-    def get_follower(self, user: Profile) -> list[Profile]:
+    def get_followers(self, user: Profile) -> list[Profile]:
         followers: list[Profile] = []
         for p in self.profiles:
             if p.following_emails == None: continue
@@ -295,10 +299,59 @@ class ProfileManager:
             if p.email in user.following_emails:
                 following.append(p)
         return following
+    
+    def on_move_to_learing_item(self, subject: str, item: str):
+        self.user.progress[subject].lesson_current = item
+    
+    def on_quiz_done(self, questionaire: str, score: int):
+        progress = self.user.progress[questionaire['name']]
+        
+        #Cập nhật progress
+        completion =  score * (100 / questionaire['size'])
+        if completion < progress.quiz_completion: return
+        progress.quiz_completion = completion
+        
+        #achievement hardwork
+        self.user.achievements.hardwork.current += 1
+        
+        #achievement complete_first_quiz, do_first_quiz, 
+        highest = 0
+        for sbj in subjects:
+            completion = self.user.progress[sbj].quiz_completion
+            if completion > highest:
+                highest = completion
+        self.user.achievements.complete_first_quiz.current = highest
+        self.user.achievements.do_first_quiz.current += 1
+        self.user.achievements.near_complete_quiz.current = completion
+                
+        # Cập nhật achievements complete_all_quiz
+        if progress.quiz_completion >= 100:
+            completed_cnt = 0
+            for sbj in subjects:
+                if self.user.progress[sbj].quiz_completion >= 100:
+                    completed_cnt += 1
+            self.user.achievements.complete_all_quiz.current = completed_cnt
+            
+    def on_exit_lesson(self, subject: str):
+        self.user.progress[subject].recency = dt.datetime.now()
+        self.user.achievements.do_first_lesson += 1
+        
+    def on_exit_quiz(self, subject: str):
+        self.user.progress[subject].recency = dt.datetime.now()
+        self.user.achievements.do_first_quiz += 1
+        
+    def on_correct(self):
+        self.user.achievements.complete_first_question += 1
+        
+    def on_login(self):#Đã gọi xong
+        #achievement veteran, famous tạm thời update ở đây thay vì trong vòng lặp
+        delta = dt.datetime.now() - self.user.creation_date
+        self.user.achievements.veteran.current = delta.days
+        self.user.achievements.famous.current = len(self.get_followers(self.user))
 
-# pm = ProfileManager()
+pm = ProfileManager()
 # user = pm.register(name='Nguyễn Văn A', email='asd@gmail.com', password='123456')
 # pm.logout()
 # user = pm.login(email='asd@gmail.com', password='123456')
-# pm.delete_user()
 # print(user.achievements.total_score)
+# pm.delete_user()
