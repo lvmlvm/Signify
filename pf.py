@@ -74,17 +74,20 @@ class AchievementSet:
     
 class Progress:    #Tiến độ học của một chủ đề
     """
-        ``learn_current`` (int): Thứ tự của mục (aka từ) đang học dở trong bài học.\n
-        ``quiz_completion`` (int): Tỉ lệ hoàn thiện bài luyện tập 0-100. \n
+        ``learn_current`` (str): Mục (aka từ) đang học dở trong bài học.\n
+        ``quiz_completion`` (int): Tỉ lệ hoàn thiện bài luyện tập cao nhất 0-100. \n
         ``recency`` (datetime | None nếu chưa học/luyện tập lần nào): Thời điểm học/luyện tập gần nhất.
     """
-    def __init__(self, learn_current:int = 0, quiz_completion: int = 0, recency: dict = None) -> None:      
+    def __init__(self, learn_current: str = None, quiz_completion: int = 0, recency: dict = None) -> None:      
         self.learn_current = learn_current
         self.quiz_completion = quiz_completion
         if recency != None:
             self.recency = datetime(**recency)
         else:
             self.recency = None
+
+class Setting:
+    pass
 
 class Profile:
     '''Mỗi profile ứng với 1 người dùng\n
@@ -97,13 +100,15 @@ class Profile:
             ...\n
         }
     '''
-    def __init__(self, email: str, password: str, name: str, progress: dict = None, achievements: dict = {}, creation_date: dict = None) -> None:
+    def __init__(self, email: str, password: str, name: str, region: str = None, following_emails: list[str] = [], progress: dict = None, achievements: dict = {}, creation_date: dict = None) -> None:
         
         self.email = email
         self.password = password
         self.name = name
+        self.region = region
+        self.following_emails = following_emails                #Truy vấn qua hàm trong ProfileManager
         self.achievements = AchievementSet(**achievements)
-        self.progress = {}
+        self.progress: dict[str, Progress] = {}
         
         if progress != None:   
             for subject in subjects:
@@ -117,8 +122,14 @@ class Profile:
         else:
             self.creation_date = datetime.now()
             
-    def on_(self):
-        pass
+    def on_move_to_learing_item(self, subject: str, item: str):
+        self.progress[subject].learn_current = item
+    
+    def on_quiz_done(self, subject: str, score: int):
+        self.progress[subject].quiz_completion = score * 10
+    
+    def on_open_learn_or_quiz(self, subject: str):
+        self.progress[subject].recency = datetime.now()
         
 class ProfileManager:
     '''Quản lý hồ sơ người dùng hiện tại và toàn bộ người dùng.\n
@@ -128,7 +139,7 @@ class ProfileManager:
     '''
     def __init__(self) -> None:
         self.user: Profile = None                   #Người dùng hiện tại (đang đăng nhập)
-        self.profiles: list[Profile] = []           #Tất cả hồ sơ
+        self.profiles: list['Profile'] = []           #Tất cả hồ sơ
         self._path = 'local/profiles.json'
         self.load()
         
@@ -204,6 +215,22 @@ class ProfileManager:
                 if (suggestion_mode == False and name == profile.name) or (suggestion_mode == True and name.lower() in profile.name.lower()):
                     matchings.append(profile)
         return matchings
+    
+    def get_follower(self, user: Profile) -> list[Profile]:
+        followers: list[Profile] = []
+        for p in self.profiles:
+            if p.following_emails == None: continue
+            if user.email in p.following_emails:
+                followers.append(p)
+        return followers
+    
+    def get_following(self, user: Profile) -> list[Profile]:
+        following: list[Profile] = []
+        if user.following_emails == None: return following
+        for p in self.profiles:
+            if p.email in user.following_emails:
+                following.append(p)
+        return following
 
 # pm = ProfileManager()
 # user = pm.register(name='Nguyễn Văn A', email='asd@gmail.com', password='123456')
