@@ -658,8 +658,8 @@ class Signify(MDApp):
         LabelBase.register(name='ExtraBold', fn_regular='assets/fonts/Lexend-ExtraBold.ttf')
         LabelBase.register(name='SemiBold', fn_regular='assets/fonts/Lexend-SemiBold.ttf')
 
+        self.profile_manager = pf.pm
         self.user = None
-        self.profile_manager = pf.ProfileManager()
         self.main_screen = None
         self.subjects = qs.subjects
 
@@ -689,6 +689,8 @@ class Signify(MDApp):
         register_name = widget.ids.register_name.text
         register_email = widget.ids.register_email.text
         register_password = widget.ids.register_password.text
+
+        print("Main's register function called!")
 
         register_status = self.profile_manager.register(register_name, register_email, register_password)
 

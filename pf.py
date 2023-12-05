@@ -252,6 +252,7 @@ class ProfileManager:
         if profile == None:
             self.user = Profile(email=email, password=password, name=name)
             self.profiles.append(self.user)
+            print("PF's register called!")
             self.on_login()        #Có thể chuyến sang lúc hiển thị giao diện sau khi login thành công
             return self.user
         return 'Email đã tồn tại. Vui lòng chọn email khác.'
