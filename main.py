@@ -126,6 +126,8 @@ class LearnPage(MDScreen):
         self.model_checkpoints = 0
         self.actions = []
 
+        self.simulation_card = None
+        self.simulation_result = None
         self.sequence = []
         self.sentence = []
         self.predictions = []
@@ -151,6 +153,8 @@ class LearnPage(MDScreen):
         self.show_capture = False
         self.sentence = []
         self.sequence = []
+
+        self.simulation_result = None
 
         widget = self.ids.learn_screen.get_screen('model')
         widget.ids.simulate_success.text = ""
@@ -309,11 +313,11 @@ class LearnPage(MDScreen):
             if len(self.sentence) > 5:
                 self.sentence = self.sentence[-5:]
 
-            self.image = camera.prob_viz(res, self.actions, self.image, colors)
+            # self.image = camera.prob_viz(res, self.actions, self.image, colors)
 
-        cv2.rectangle(self.image, (0, 0), (640, 40), (245, 117, 16), -1)
-        cv2.putText(self.image, ' '.join(self.sentence), (3, 30),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+        # cv2.rectangle(self.image, (0, 0), (640, 40), (245, 117, 16), -1)
+        # cv2.putText(self.image, ' '.join(self.sentence), (3, 30),
+        #             cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
 
         self.image = cv2.resize(self.image, (int(float(self.image.shape[1]) * 1.5), int(float(self.image.shape[0]) * 1.5)))
         self.image_frame = self.image
@@ -324,8 +328,16 @@ class LearnPage(MDScreen):
         widget = self.ids.learn_screen.get_screen('model')
         widget.ids.image.texture = texture
 
-        if len(self.sentence) == self.model_checkpoints - 1 and np.unique(self.predictions[-5:])[0] == 0:
-            widget.ids.simulate_success.text = "Success"
+        if self.simulation_card is None:
+            if len(self.sentence) == self.model_checkpoints - 1 and np.unique(self.predictions[-5:])[0] == 0:
+                self.simulation_card = SimulationCard(True)
+                self.simulation_result = True
+                widget.add_widget(self.simulation_card)
+
+    def close_simulation_by_card(self):
+        widget = self.ids.learn_screen.get_screen('model')
+        widget.remove_widget(self.simulation_card)
+        self.exit_simulate()
 
 
 class AnswerCard(MDCard):
@@ -342,6 +354,22 @@ class AnswerCard(MDCard):
             self.ids.button.md_bg_color = 'f50707'
 
         self.ids.answer.text = answer
+
+class SimulationCard(MDCard):
+    def __init__(self, *args):
+        super().__init__(*args)
+        result = args[0]
+
+        if result:
+            self.md_bg_color = 'b0ffd4'
+            self.ids.button.md_bg_color = '09b858'
+            self.ids.button.text = "Quay lại"
+            self.ids.result.text = "Chính xác"
+        else:
+            self.md_bg_color = 'f0b4b4'
+            self.ids.button.md_bg_color = 'f50707'
+            self.ids.button.text = "Thử lại"
+            self.ids.result.text = "Hãy thử lại"
 
 
 class ContentCard(MDCard):
@@ -622,11 +650,11 @@ class SearchPage(MDScreen):
             if len(self.sentence) > 5:
                 self.sentence = self.sentence[-5:]
 
-            self.image = camera.prob_viz(res, self.actions, self.image, colors)
+            # self.image = camera.prob_viz(res, self.actions, self.image, colors)
 
-        cv2.rectangle(self.image, (0, 0), (640, 40), (245, 117, 16), -1)
-        cv2.putText(self.image, ' '.join(self.sentence), (3, 30),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+        # cv2.rectangle(self.image, (0, 0), (640, 40), (245, 117, 16), -1)
+        # cv2.putText(self.image, ' '.join(self.sentence), (3, 30),
+        #             cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
 
         self.image = cv2.resize(self.image, (int(float(self.image.shape[1]) * 1.5), int(float(self.image.shape[0]) * 1.5)))
         self.image_frame = self.image
@@ -705,6 +733,7 @@ class Signify(MDApp):
 
     def logout(self):
         self.main_screen.current = 'login'
+        self.main_screen.transition.direction = 'right'
         self.user = "None"
         self.profile_manager.logout()
 

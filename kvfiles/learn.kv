@@ -1,6 +1,35 @@
 <ContentCard>:
     on_release: root.parent.parent.parent.parent.parent.parent.choose_word(self)
 
+<SimulationCard>:
+    size_hint: .45, .15
+    padding: 20
+    elevation: 2
+    border_radius: 20
+    radius: [15]
+    pos_hint: {'center_x': .5, 'center_y': .09}
+    md_bg_color: 'b0ffd4'
+    cols: 1
+
+    MDRelativeLayout:
+        MDLabel:
+            id: result
+            font_name: 'Bold'
+            text: 'Chào buổi sáng'
+            pos_hint: {"center_y": .9, "left": 1}
+
+        MDFillRoundFlatButton:
+            id: button
+            font_name: 'Bold'
+            md_bg_color: '09b858'
+            text: 'Hoàn tất'
+            size_hint_x: 1
+            pos_hint: {'center_x': .5, 'bottom': 1}
+            on_press:
+                root.parent.current = 'flash_card'
+                root.parent.transition.direction = 'right'
+                root.parent.parent.parent.close_simulation_by_card()
+
 <LearnPage>:
     name: "learn_page"
     MDScreenManager:

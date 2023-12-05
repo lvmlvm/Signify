@@ -331,4 +331,5 @@
                         line_color: 'black'
                         pos_hint: {'center_x': .5}
                         on_press:
-                            print(app.profile_manager.profiles)
+                            app.logout()
+                            app.profile_manager.save()
