@@ -1,3 +1,5 @@
+from kivy.config import Config
+Config.set('graphics', 'window_state', 'maximized')
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.core.text import LabelBase
@@ -44,9 +46,9 @@ import camera
 import pf
 
 # Window.fullscreen = 'auto'
-Window.size = RESOLUTION
-Window.top = 100
-Window.left = 100
+# Window.size = RESOLUTION
+# Window.top = 100
+# Window.left = 100
 Builder.load_file('kvfiles/profile.kv')
 Builder.load_file('kvfiles/learn.kv')
 Builder.load_file('kvfiles/quiz.kv')
@@ -720,3 +722,4 @@ class Signify(MDApp):
 
 if __name__ == '__main__':
     Signify().run()
+    pf.pm.save()
