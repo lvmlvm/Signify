@@ -1,44 +1,28 @@
 from kivy.config import Config
 Config.set('graphics', 'window_state', 'maximized')
-from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.core.text import LabelBase
-from kivy.graphics import Color, RoundedRectangle
 from kivy.graphics.texture import Texture
 from kivy.lang import Builder
 from kivy.properties import StringProperty
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
-from kivy.uix.textinput import TextInput
-from kivy.utils import rgba
-from kivymd.uix.behaviors import CommonElevationBehavior
-from kivymd.uix.bottomnavigation import MDBottomNavigation
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button import MDRectangleFlatButton, MDFillRoundFlatIconButton
 from kivymd.uix.card import MDCard
-from kivymd.uix.chip import MDChip
-from kivymd.uix.fitimage import FitImage
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.label import MDLabel
 from kivymd.uix.list import OneLineIconListItem
 from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.navigationdrawer import MDNavigationLayout
-from kivymd.uix.navigationrail import MDNavigationRail
 from kivymd.uix.screen import MDScreen
 from kivymd.app import MDApp
 from kivymd.uix.screenmanager import MDScreenManager
 from kivymd.uix.scrollview import MDScrollView
 from kivymd.uix.tab import MDTabsBase
-from kivymd.uix.textfield import MDTextField
-from kivymd.uix.widget import MDWidget
 from kivy.core.window import Window
-from kivy.uix.videoplayer import VideoPlayer
 
 import dictionary
 import question as qs
 from scripts.settings import *
 import cv2
-import tensorflow
 import numpy as np
 import mediapipe as mp
 import model.model_loader as md_loader
