@@ -218,6 +218,8 @@ class LearnPage(MDScreen):
 
         self.questions_content = qs.genQuestionaire(self.topic)
 
+        self.questions = []
+
         for i in self.questions_content['content'].keys():
             self.questions.append(
                 {
