@@ -11,6 +11,5 @@
 3. Có thể tự chỉnh file .spec, datas=[('path to site-pakages/mediapipe/modules','mediapipe/modules'),..., nếu không thì thực hiện:
 - Vào AppData\Local\Programs\Python\Python311\Lib\site-packages\mediapipe, copy modules
 - Vào dist -> Signify -> _internal -> mediapipe, paste
-4. Vào dist -> Signify -> _internal, cut assets, kivyfiles, local
-5. Vào dist -> Signify, paste
-6. Chạy .exe
+4. Coppy assets, kivyfiles, local rồi paste vào dist -> Signify
+5. Chạy .exe
