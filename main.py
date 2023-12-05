@@ -218,6 +218,15 @@ class LearnPage(MDScreen):
 
         widget.ids.video_source.source = content['videoURL'][region]
 
+        if 'model_path' in content:
+            widget.ids.simulate_button.md_bg_color = "02a884"
+            widget.ids.simulate_button.text = "Luyện tập mô phỏng"
+            widget.ids.simulate_button.disabled = False
+        else:
+            widget.ids.simulate_button.md_bg_color = "69e0c6"
+            widget.ids.simulate_button.text = "Động tác này đang phát triển"
+            widget.ids.simulate_button.disabled = True
+
     def show_multiple_choice(self):
         widget = self.ids.learn_screen.get_screen('multiple_choice')
         widget.ids.topic_name.text = self.topic
