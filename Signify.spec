@@ -11,10 +11,6 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
-        ('assets','assets'),
-        ('local','local'),
-        ('kvfiles','kvfiles'),
-        ('local','local'),
         ('model','model')
         ],
     hiddenimports=[],
