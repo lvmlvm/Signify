@@ -41,6 +41,7 @@ import numpy as np
 import mediapipe as mp
 import model.model_loader as md_loader
 import camera
+import pf
 
 # Window.fullscreen = 'auto'
 Window.size = RESOLUTION
@@ -655,9 +656,53 @@ class Signify(MDApp):
         LabelBase.register(name='ExtraBold', fn_regular='assets/fonts/Lexend-ExtraBold.ttf')
         LabelBase.register(name='SemiBold', fn_regular='assets/fonts/Lexend-SemiBold.ttf')
 
+        self.user = None
+        self.profile_manager = pf.ProfileManager()
         self.main_screen = None
-
         self.subjects = qs.subjects
+
+    def login(self):
+        widget = self.main_screen.get_screen('login')
+
+        login_email = widget.ids.login_email.text
+        login_password = widget.ids.login_password.text
+
+        login_status = self.profile_manager.login(login_email, login_password)
+
+        if login_status == "Sai mật khẩu. Vui lòng nhập lại.":
+            widget.ids.login_password.text = ""
+            widget.ids.login_status.text = login_status
+        elif login_status == "Tài khoản không tồn tại.":
+            widget.ids.login_email.text = ""
+            widget.ids.login_password.text = ""
+            widget.ids.login_status.text = login_status
+        else:
+            self.user = login_status
+            self.main_screen.current = 'home'
+            self.main_screen.transition.direction = 'left'
+    
+    def register(self):
+        widget = self.main_screen.get_screen('signup')
+        
+        register_name = widget.ids.register_name.text
+        register_email = widget.ids.register_email.text
+        register_password = widget.ids.register_password.text
+
+        register_status = self.profile_manager.register(register_name, register_email, register_password)
+
+        if register_status == "Email đã tồn tại. Vui lòng chọn email khác.":
+            widget.ids.register_email.text = ""
+            widget.ids.register_password.text = ""
+            widget.ids.register_status.text = register_status
+        else:
+            self.user = register_status
+            self.main_screen.current = 'home'
+            self.main_screen.transition.direction = 'left'
+
+    def logout(self):
+        self.main_screen.current = 'login'
+        self.user = "None"
+        self.profile_manager.logout()
 
     def build(self):
         self.title = TITLE

@@ -58,7 +58,8 @@
                             radius: [10]
 
                             TextInput:
-                                hint_text: 'Gmail của bạn'
+                                id: login_email
+                                hint_text: 'Email của bạn'
                                 pos_hint: {'center_x': .5, 'center_y': .5}
                                 height: self.minimum_height
                                 cursor_color: rgba(253, 174, 177, 255)
@@ -87,6 +88,7 @@
                             radius: [10]
 
                             TextInput:
+                                id: login_password
                                 hint_text: '******'
                                 pos_hint: {'center_x': .5, 'center_y': .5}
                                 height: self.minimum_height
@@ -100,12 +102,23 @@
                                 font_name: 'Medium'
                                 hint_text_color: rgba(206, 206, 209, 255)
 
+            MDLabel:
+                id: login_status
+                text: ''
+                font_name: 'Medium'
+                color: 'FF0000'
+                pos_hint: {'center_x': .5, 'center_y': .4}
+                halign: 'center'
+
             MDFillRoundFlatButton:
                 font_name: 'Bold'
                 text: 'Đăng nhập'
                 pos_hint: {'center_x': .5, 'center_y': .3}
+                halign: 'center'
                 size_hint: .6, .05
-                on_press: app.main_screen.current = 'home'
+                on_press: 
+                    app.login()
+                    # app.main_screen.current = 'home'
 
 
             MDLabel:
@@ -184,7 +197,8 @@
                             radius: [10]
 
                             TextInput:
-                                hint_text: 'Gmail của bạn'
+                                id: register_email
+                                hint_text: 'Email của bạn'
                                 pos_hint: {'center_x': .5, 'center_y': .5}
                                 height: self.minimum_height
                                 cursor_color: rgba(253, 174, 177, 255)
@@ -211,6 +225,7 @@
                             radius: [10]
 
                             TextInput:
+                                id: register_name
                                 hint_text: 'Tên của bạn'
                                 pos_hint: {'center_x': .5, 'center_y': .5}
                                 height: self.minimum_height
@@ -240,6 +255,7 @@
                             radius: [10]
 
                             TextInput:
+                                id: register_password
                                 hint_text: '******'
                                 pos_hint: {'center_x': .5, 'center_y': .5}
                                 height: self.minimum_height
@@ -252,6 +268,14 @@
                                 font_size: '15sp'
                                 font_name: 'Medium'
                                 hint_text_color: rgba(206, 206, 209, 255)
+
+            MDLabel:
+                id: register_status
+                text: ''
+                font_name: 'Medium'
+                color: 'FF0000'
+                pos_hint: {'center_x': .5, 'center_y': .4}
+                halign: 'center'
 
             MDFillRoundFlatButton:
                 md_bg_color: 'ed941f'
