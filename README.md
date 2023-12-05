@@ -8,9 +8,9 @@
 **Cách deploy .exe**
 1. Cài pyinstaller, mediapipe
 2. Chạy pyinstaller Signify.spec
-3. Có thể tự chỉnh file .spec, datas=[('path to site-pakages/mediapipe/modules','mediapipe/modules'),..., nếu không thì thực hiện từ bước 3.1:
-3.1 Vào AppData\Local\Programs\Python\Python311\Lib\site-packages\mediapipe, copy modules
-3.2 Vào dist -> Signify -> _internal -> mediapipe, paste
+3. Có thể tự chỉnh file .spec, datas=[('path to site-pakages/mediapipe/modules','mediapipe/modules'),..., nếu không thì thực hiện:
+- Vào AppData\Local\Programs\Python\Python311\Lib\site-packages\mediapipe, copy modules
+- Vào dist -> Signify -> _internal -> mediapipe, paste
 4. Vào dist -> Signify -> _internal, cut assets, kivyfiles, local
 5. Vào dist -> Signify, paste
 6. Chạy .exe
