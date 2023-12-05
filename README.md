@@ -1,5 +1,5 @@
 # Signify
-**Cách thức cài đặt Signify khi không tải được Python và các thư viện liên quan:**
+**Cách thức cài đặt Signify khi không tải được Python và requirements:**
 - Truy cập https://drive.google.com/drive/u/1/folders/1bqcxdLvMsgZwmTgAfDgg3bDzSbwxO31V
 - Tải folder Signify về
 - Giải nén nếu cần
