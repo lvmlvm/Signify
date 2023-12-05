@@ -99,12 +99,12 @@ class AchievementSet:
             self.do_first_lesson= Achievement(max=1, weight=1, name='Bài học đầu tiên!', description='Trải nghiệm bài học đầu tiên của Signify.')
         
         if kwargs.get('complete_first_question') != None:   #gọi on_correct()
-            self.complete_first_question = Achievement(**kwargs.get('do_first_lesson'))
+            self.complete_first_question = Achievement(**kwargs.get('complete_first_question'))
         else:
             self.complete_first_question = Achievement(max=1, weight=2, name='Chập chững!', description='Trả lời đúng câu hỏi đầu tiên.')
         
         if kwargs.get('near_complete_quiz') != None:    #gọi on_quiz_done()
-            self.near_complete_quiz = Achievement(**kwargs.get('do_first_lesson'))
+            self.near_complete_quiz = Achievement(**kwargs.get('near_complete_quiz'))
         else:
             self.near_complete_quiz = Achievement(max=80, weight=4, name='Gần được rồi!', description='Đạt ít nhất 80%% số điểm bài luyện tập.')
             
@@ -206,8 +206,8 @@ class ProfileManager:
         self._path = 'local/profiles.json'
         self.load()
         
-    def __del__(self):
-        self.save()
+    # def __del__(self):
+    #     self.save()
     
     def load(self):
         '''load dữ liệu từ _path, update profiles và user
