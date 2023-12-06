@@ -5,7 +5,7 @@
 - Giải nén nếu cần
 - Chạy Signify.exe
 
-**Cách deploy .exe**
+**Cách deploy .exe (dành cho developer)**
 1. Cài pyinstaller
 2. Chạy pyinstaller Signify.spec
 3. Có thể tự chỉnh file .spec, datas=[('path to site-pakages/mediapipe/modules','mediapipe/modules'),..., nếu không thì thực hiện:
