@@ -1,6 +1,6 @@
 # Signify
 **Cách thức cài đặt Signify khi không tải được Python và requirements:**
-- Truy cập https://drive.google.com/drive/u/1/folders/1bqcxdLvMsgZwmTgAfDgg3bDzSbwxO31V
+- Truy cập https://drive.google.com/drive/folders/1bqcxdLvMsgZwmTgAfDgg3bDzSbwxO31V?usp=sharing
 - Tải folder Signify về
 - Giải nén nếu cần
 - Chạy Signify.exe
