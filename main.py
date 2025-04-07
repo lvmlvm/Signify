@@ -645,12 +645,6 @@ class SearchPage(MDScreen):
             if len(self.sentence) > 5:
                 self.sentence = self.sentence[-5:]
 
-            # self.image = camera.prob_viz(res, self.actions, self.image, colors)
-
-        # cv2.rectangle(self.image, (0, 0), (640, 40), (245, 117, 16), -1)
-        # cv2.putText(self.image, ' '.join(self.sentence), (3, 30),
-        #             cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
-
         self.image = cv2.resize(self.image, (int(float(self.image.shape[1]) * 1.5), int(float(self.image.shape[0]) * 1.5)))
         self.image_frame = self.image
         buffer = cv2.flip(self.image_frame, 0).tostring()
